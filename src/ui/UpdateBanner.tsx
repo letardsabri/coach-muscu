@@ -24,7 +24,15 @@ export function UpdateBanner({ hidden }: { hidden: boolean }) {
         <button className="btn-ghost" onClick={() => setNeedRefresh(false)}>
           Plus tard
         </button>
-        <button className="btn-primary" onClick={() => void updateServiceWorker(true)}>
+        <button
+          className="btn-primary"
+          onClick={() => {
+            void updateServiceWorker(true);
+            // Filet de sécurité : si la nouvelle version était déjà active (1ʳᵉ visite, page pas encore
+            // contrôlée par le service worker), aucun événement ne déclenche le rechargement.
+            setTimeout(() => location.reload(), 1500);
+          }}
+        >
           Mettre à jour
         </button>
       </span>
