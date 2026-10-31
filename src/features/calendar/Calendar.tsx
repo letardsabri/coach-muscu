@@ -35,6 +35,7 @@ export function Calendar() {
     from,
     to: addDays(from, 6),
     today,
+    trackingSince: dayKey(new Date(profile.createdAt)),
   });
   const selected = days.find((d) => d.day === openDay);
   const units = weeklyLoadUnits(

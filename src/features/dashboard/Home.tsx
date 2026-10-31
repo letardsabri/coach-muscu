@@ -53,6 +53,7 @@ export function Home({ onResume, onNavigate }: { onResume: () => void; onNavigat
     from: monday,
     to: addDays(monday, 6),
     today,
+    trackingSince: dayKey(new Date(profile.createdAt)),
   });
   const ahead = buildCalendar({
     programme,

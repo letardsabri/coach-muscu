@@ -74,6 +74,11 @@ describe('calendrier', () => {
     expect(days[4]!.planned).toBe('A');
   });
 
+  it('les jours avant la première utilisation ne sont pas « manqués »', () => {
+    const days = buildCalendar({ ...base, nextSessionType: 'A', from: '2026-11-02', to: '2026-11-08', today: '2026-11-07', trackingSince: '2026-11-05' });
+    expect(days.filter((d) => d.missed).map((d) => d.day)).toEqual(['2026-11-06']);
+  });
+
   it('décaler et annuler', () => {
     const overrides: ScheduleOverride[] = [
       { id: '1', day: '2026-11-03', action: 'move', fromDay: '2026-11-02', createdAt: 1 },

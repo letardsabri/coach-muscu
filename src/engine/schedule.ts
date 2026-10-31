@@ -62,6 +62,8 @@ export function buildCalendar(args: {
   from: DayKey;
   to: DayKey;
   today: DayKey;
+  /** Premier jour d'utilisation : avant, un jour d'entraînement sans séance n'est pas « manqué ». */
+  trackingSince?: DayKey;
 }): CalendarDay[] {
   const { profile, today } = args;
   // On projette depuis aujourd'hui pour que l'alternance soit juste quel que soit l'intervalle affiché.
@@ -78,7 +80,11 @@ export function buildCalendar(args: {
     const day: CalendarDay = {
       day: d,
       done,
-      missed: isPast && slot !== undefined && done.length === 0,
+      missed:
+        isPast &&
+        slot !== undefined &&
+        done.length === 0 &&
+        (args.trackingSince === undefined || diffDays(d, args.trackingSince) >= 0),
       movedFrom: slot?.movedFrom,
       mma: args.mma.filter((m) => m.day === d),
       warnings: [],
