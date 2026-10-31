@@ -1,6 +1,9 @@
 # DÉPLOIEMENT — Mettre l'app en ligne et l'installer sur l'iPhone
 
 > Étape 7 · Hébergement gratuit sur **GitHub Pages** (HTTPS inclus, obligatoire pour une PWA).
+>
+> **L'app est en ligne : https://letardsabri.github.io/coach-muscu/**
+> Dépôt : https://github.com/letardsabri/coach-muscu · Déploiements : onglet *Actions* du dépôt.
 
 ---
 
