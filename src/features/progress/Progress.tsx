@@ -15,7 +15,7 @@ import { formatLoad, SESSION_LABELS } from '../../ui/format';
 import { useHistory, useProfile } from '../data';
 import { evaluatePhaseNow } from '../coach/coachRepo';
 import { PhaseCriteria } from '../coach/PhaseCriteria';
-import { latestBodyweight } from '../workout/workoutRepo';
+import { deleteSession, latestBodyweight } from '../workout/workoutRepo';
 import { exerciseHistory, GROUP_ORDER, groupBy, shortDate, weeklyVolume } from './stats';
 
 type View = 'force' | 'volume' | 'tests' | 'history';
@@ -40,6 +40,8 @@ export function Progress() {
 
   if (!profile || !data) return <main className="screen" />;
   const completed = data.sessions.filter((s) => s.status === 'completed');
+  // L'historique montre aussi les séances abandonnées, pour pouvoir les supprimer.
+  const finished = data.sessions.filter((s) => s.status !== 'in_progress');
 
   return (
     <main className="screen">
@@ -55,17 +57,21 @@ export function Progress() {
           { value: 'history', label: 'Séances' },
         ]}
       />
-      {completed.length === 0 && view !== 'tests' ? (
+      {(view === 'force' || view === 'volume') && completed.length === 0 && (
         <div className="card">
           <p className="muted">Termine une première séance : tes courbes apparaîtront ici.</p>
         </div>
-      ) : (
-        <>
-          {view === 'force' && <ForceView profile={profile} sessions={completed} sets={data.sets} />}
-          {view === 'volume' && <VolumeView sets={data.sets} />}
-          {view === 'history' && <HistoryView sessions={completed} sets={data.sets} />}
-        </>
       )}
+      {view === 'force' && completed.length > 0 && <ForceView profile={profile} sessions={completed} sets={data.sets} />}
+      {view === 'volume' && completed.length > 0 && <VolumeView sets={data.sets} />}
+      {view === 'history' &&
+        (finished.length === 0 ? (
+          <div className="card">
+            <p className="muted">Aucune séance enregistrée pour l'instant.</p>
+          </div>
+        ) : (
+          <HistoryView sessions={finished} sets={data.sets} />
+        ))}
       {view === 'tests' && <TestsView tests={data.tests} />}
     </main>
   );
@@ -281,6 +287,7 @@ function HistoryView({ sessions, sets }: { sessions: Session[]; sets: SetLog[] }
                 <span>
                   <b>{shortDate(s.day)}</b> · {SESSION_LABELS[s.type]}
                   {s.isDeload && ' · deload'}
+                  {s.status === 'abandoned' && <span className="faint"> · abandonnée</span>}
                 </span>
                 <span className="muted num">
                   {own.length} séries · {formatClock(duration)}
@@ -300,6 +307,17 @@ function HistoryView({ sessions, sets }: { sessions: Session[]; sets: SetLog[] }
                       </span>
                     );
                   })}
+                  <button
+                    className="btn-ghost btn-danger"
+                    style={{ alignSelf: 'flex-start', padding: 0 }}
+                    onClick={async () => {
+                      if (!window.confirm(`Supprimer définitivement la séance du ${shortDate(s.day)} et ses ${own.length} séries ?`)) return;
+                      await deleteSession(s.id);
+                      setOpen(null);
+                    }}
+                  >
+                    Supprimer cette séance
+                  </button>
                 </div>
               )}
             </div>

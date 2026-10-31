@@ -18,6 +18,7 @@ import { Sheet, Stepper } from '../../ui/components';
 import { FEELINGS, formatLoad, formatRange, kg, unitLabel } from '../../ui/format';
 import {
   abandonSession,
+  deleteSession,
   finishSession,
   lastExposures,
   logSet,
@@ -92,6 +93,13 @@ export function WorkoutScreen({ sessionId, onPause }: { sessionId: string; onPau
     if (window.confirm('Abandonner la séance ? Les séries faites restent dans l’historique.')) await abandonSession(session.id);
   };
 
+  const confirmDelete = async () => {
+    setSheet(null);
+    if (window.confirm('Supprimer définitivement cette séance et toutes ses séries ? (séance d’essai, erreur…)')) {
+      await deleteSession(session.id);
+    }
+  };
+
   return (
     <div className="workout">
       <header className="workout-top">
@@ -164,7 +172,10 @@ export function WorkoutScreen({ sessionId, onPause }: { sessionId: string; onPau
             )}
             <button onClick={onPause}>Mettre en pause (reprendre plus tard)</button>
             <button className="btn-danger" onClick={() => void confirmAbandon()}>
-              Abandonner la séance
+              Abandonner la séance (garder les séries)
+            </button>
+            <button className="btn-danger" onClick={() => void confirmDelete()}>
+              Supprimer la séance (essai, erreur)
             </button>
           </div>
           <p className="faint" style={{ fontSize: 13 }}>

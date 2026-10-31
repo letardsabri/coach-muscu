@@ -219,3 +219,30 @@ export async function finishSession(sessionId: string): Promise<void> {
 export async function abandonSession(sessionId: string): Promise<void> {
   await db.sessions.update(sessionId, { status: 'abandoned', endedAt: Date.now(), restEndsAt: undefined });
 }
+
+/**
+ * Suppression définitive (séance d'essai, erreur de saisie) : la séance, ses séries, ses résultats de tests
+ * et les recommandations en attente qu'elle a produites disparaissent. Si c'était la dernière séance
+ * terminée, l'alternance A/B revient à ce qu'elle était avant elle.
+ */
+export async function deleteSession(sessionId: string): Promise<void> {
+  await db.transaction('rw', [db.sessions, db.sets, db.maxTests, db.recommendations, db.programState], async () => {
+    const session = await db.sessions.get(sessionId);
+    if (!session) return;
+
+    if (session.status === 'completed') {
+      const completed = (await db.sessions.where('status').equals('completed').sortBy('startedAt')).filter((s) => s.type !== 'MIN' && s.type !== 'F');
+      const isLatest = completed[completed.length - 1]?.id === sessionId;
+      const actsAs = session.type === 'TEST' ? (session.plan.some((pe) => pe.testId === 'pullup_max') ? 'A' : 'B') : session.type;
+      const state = await db.programState.get('current');
+      if (isLatest && state && (actsAs === 'A' || actsAs === 'B')) {
+        await db.programState.update('current', { nextSessionType: actsAs, updatedAt: Date.now() });
+      }
+    }
+
+    await db.sets.where('sessionId').equals(sessionId).delete();
+    await db.maxTests.filter((t) => t.sessionId === sessionId).delete();
+    await db.recommendations.filter((r) => r.sessionId === sessionId && r.status === 'pending').delete();
+    await db.sessions.delete(sessionId);
+  });
+}
