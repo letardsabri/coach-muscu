@@ -1,0 +1,682 @@
+{
+  "version": 2,
+  "updatedAt": "2026-10-31",
+
+  "equipment": {
+    "dumbbell": { "minKg": 4, "maxKg": 12, "stepKg": 2 },
+    "weight": { "smallStepKg": 1.25, "largeStepKg": 2.5, "thresholdKg": 10, "maxKg": 24 }
+  },
+
+  "feelings": { "facile": 3, "correct": 2, "dur": 1, "limite": 0 },
+
+  "exercises": {
+    "pullup_pronation": {
+      "name": "Tractions pronation",
+      "shortName": "Tractions",
+      "muscles": ["dos", "biceps", "deltoide_post"],
+      "kind": "compound",
+      "loadType": "bodyweight",
+      "bodyweightFactor": 1,
+      "ankle": "faible",
+      "ankleNote": "Monter et descendre par la chaise, jambe saine. Jamais de saut ni de chute.",
+      "cues": ["Bras complètement tendus en bas", "Menton au-dessus de la barre", "Aucun élan", "Descente 2 s"],
+      "variants": [
+        { "id": "negatives", "name": "Négatives (descente 4–5 s)", "coef": 0.6, "offLadder": true },
+        { "id": "strict", "name": "Strictes", "coef": 1.0 },
+        { "id": "tempo", "name": "Tempo (descente 3 s, pause 1 s en haut)", "coef": 1.1 },
+        { "id": "weighted", "name": "Lestées", "coef": 1.0, "weighted": true, "minPhase": 3 },
+        { "id": "lsit", "name": "L-sit", "coef": 1.25 },
+        { "id": "archer", "name": "Archer", "coef": 1.35 }
+      ],
+      "defaultVariant": "strict"
+    },
+    "pullup_supination": {
+      "name": "Tractions supination",
+      "shortName": "Chin-ups",
+      "muscles": ["dos", "biceps"],
+      "kind": "compound",
+      "loadType": "bodyweight",
+      "bodyweightFactor": 1,
+      "ankle": "faible",
+      "ankleNote": "Monter et descendre par la chaise, jambe saine.",
+      "cues": ["Paumes vers soi, prise largeur d'épaules", "Bras tendus en bas", "Menton au-dessus de la barre"],
+      "variants": [
+        { "id": "negatives", "name": "Négatives (descente 4–5 s)", "coef": 0.6, "offLadder": true },
+        { "id": "strict", "name": "Strictes", "coef": 1.0 },
+        { "id": "tempo", "name": "Tempo (descente 3 s)", "coef": 1.1 },
+        { "id": "weighted", "name": "Lestées", "coef": 1.0, "weighted": true, "minPhase": 3 }
+      ],
+      "defaultVariant": "strict"
+    },
+    "dips": {
+      "name": "Dips",
+      "shortName": "Dips",
+      "muscles": ["pectoraux", "triceps", "deltoide_ant"],
+      "kind": "compound",
+      "loadType": "bodyweight",
+      "bodyweightFactor": 0.95,
+      "ankle": "faible",
+      "ankleNote": "Monter avec la chaise ou en poussant des bras, sans impulsion de jambes.",
+      "cues": ["Épaule au niveau ou sous le coude", "Remontée bras verrouillés", "Pas de rebond en bas", "Épaules basses"],
+      "variants": [
+        { "id": "strict", "name": "Stricts", "coef": 1.0 },
+        { "id": "tempo", "name": "Tempo (descente 3 s, pause 1 s en bas)", "coef": 1.1 },
+        { "id": "weighted", "name": "Lestés", "coef": 1.0, "weighted": true, "minPhase": 3 }
+      ],
+      "defaultVariant": "strict"
+    },
+    "pushup": {
+      "name": "Pompes",
+      "shortName": "Pompes",
+      "muscles": ["pectoraux", "triceps", "deltoide_ant"],
+      "kind": "compound",
+      "loadType": "bodyweight",
+      "bodyweightFactor": 0.64,
+      "ankle": "faible",
+      "ankleNote": "Si douleur : dessus des pieds sur un coussin, puis variante genoux.",
+      "cues": ["Corps gainé en planche", "Poitrine à un poing du sol", "Coudes à ~45° du buste"],
+      "variants": [
+        { "id": "knees", "name": "Sur les genoux", "coef": 0.7, "offLadder": true },
+        { "id": "classic", "name": "Classiques", "coef": 1.0 },
+        { "id": "deficit", "name": "Déficit (mains sur haltères)", "coef": 1.1 },
+        { "id": "feet_elevated", "name": "Pieds surélevés (chaise)", "coef": 1.2 },
+        { "id": "feet_elevated_deficit", "name": "Pieds surélevés + déficit", "coef": 1.3 },
+        { "id": "pseudo_planche", "name": "Pseudo-planche", "coef": 1.45 },
+        { "id": "archer", "name": "Archer", "coef": 1.6 },
+        { "id": "weighted", "name": "Lestées (sac à dos)", "coef": 1.3, "weighted": true }
+      ],
+      "defaultVariant": "classic"
+    },
+    "curl": {
+      "name": "Curl haltères assis",
+      "shortName": "Curl",
+      "muscles": ["biceps"],
+      "kind": "isolation",
+      "loadType": "dumbbell",
+      "ankle": "faible",
+      "ankleNote": "Toujours assis, pieds à plat.",
+      "cues": ["Buste immobile", "Contraction complète en haut", "Descente 2 s"],
+      "variants": [
+        { "id": "seated", "name": "Assis", "coef": 1.0 },
+        { "id": "tempo", "name": "Tempo (descente 3 s)", "coef": 1.1 },
+        { "id": "concentration", "name": "Concentré (1 bras, sur la chaise)", "coef": 1.1 },
+        { "id": "pause_tempo", "name": "Pause 2 s en haut + descente 3 s", "coef": 1.2 },
+        { "id": "rest_pause", "name": "Rest-pause dernière série", "coef": 1.25 }
+      ],
+      "defaultVariant": "seated",
+      "startLoadKg": 8
+    },
+    "rear_delt_fly": {
+      "name": "Oiseau assis",
+      "shortName": "Oiseau",
+      "muscles": ["deltoide_post", "haut_du_dos"],
+      "kind": "isolation",
+      "loadType": "dumbbell",
+      "ankle": "faible",
+      "ankleNote": "Assis au bord de la chaise, buste penché sur les cuisses.",
+      "cues": ["Buste penché sur les cuisses", "Bras légèrement fléchis", "Ouvrir vers l'extérieur, pas vers l'arrière"],
+      "variants": [
+        { "id": "seated", "name": "Assis buste penché", "coef": 1.0 },
+        { "id": "tempo", "name": "Tempo (descente 3 s)", "coef": 1.1 },
+        { "id": "unilateral", "name": "Unilatéral", "coef": 1.1 }
+      ],
+      "defaultVariant": "seated",
+      "startLoadKg": 4
+    },
+    "inverted_row": {
+      "name": "Rowing inversé sous les barres de dips",
+      "shortName": "Rowing inv.",
+      "muscles": ["haut_du_dos", "deltoide_post", "biceps"],
+      "kind": "compound",
+      "loadType": "bodyweight",
+      "bodyweightFactor": 0.5,
+      "ankle": "faible",
+      "ankleNote": "Talons posés au sol, charge très faible. Arrêter si douleur.",
+      "cues": ["Corps gainé", "Poitrine jusqu'aux barres", "Omoplates serrées en haut"],
+      "variants": [
+        { "id": "knees_bent", "name": "Genoux fléchis", "coef": 0.8 },
+        { "id": "straight", "name": "Jambes tendues", "coef": 1.0 },
+        { "id": "feet_elevated", "name": "Pieds sur la chaise", "coef": 1.2 },
+        { "id": "tempo", "name": "Pieds surélevés + pause 2 s en haut", "coef": 1.3 },
+        { "id": "weighted", "name": "Lesté (sac à dos)", "coef": 1.2, "weighted": true }
+      ],
+      "defaultVariant": "knees_bent",
+      "requiresSetupTest": true
+    },
+    "lateral_raise": {
+      "name": "Élévations latérales assis",
+      "shortName": "Élév. lat.",
+      "muscles": ["deltoide_lat"],
+      "kind": "isolation",
+      "loadType": "dumbbell",
+      "ankle": "faible",
+      "ankleNote": "Toujours assis.",
+      "cues": ["Coudes à hauteur d'épaules", "Pas de haussement de trapèzes", "Aucun élan"],
+      "variants": [
+        { "id": "seated", "name": "Assis", "coef": 1.0 },
+        { "id": "tempo", "name": "Tempo (descente 3 s)", "coef": 1.1 },
+        { "id": "lean_away", "name": "Unilatérales penché (lean-away)", "coef": 1.15 },
+        { "id": "myo", "name": "Myo-reps dernière série", "coef": 1.2 }
+      ],
+      "defaultVariant": "seated",
+      "startLoadKg": 4
+    },
+    "triceps_overhead": {
+      "name": "Extension triceps nuque assis",
+      "shortName": "Ext. triceps",
+      "muscles": ["triceps"],
+      "kind": "isolation",
+      "loadType": "dumbbell",
+      "ankle": "faible",
+      "ankleNote": "Assis.",
+      "cues": ["1 haltère à deux mains", "Coudes serrés, pointés vers le haut", "Étirement complet en bas"],
+      "variants": [
+        { "id": "seated", "name": "Assis, 2 mains", "coef": 1.0 },
+        { "id": "tempo", "name": "Tempo (descente 3 s)", "coef": 1.1 },
+        { "id": "unilateral", "name": "Unilatéral", "coef": 1.15 }
+      ],
+      "defaultVariant": "seated",
+      "startLoadKg": 8
+    },
+    "hanging_knee_raise": {
+      "name": "Relevés suspendus",
+      "shortName": "Relevés",
+      "muscles": ["abdominaux"],
+      "kind": "core",
+      "loadType": "reps",
+      "ankle": "faible",
+      "ankleNote": "Monter et descendre par la chaise.",
+      "cues": ["Pas de balancement", "Enrouler le bassin vers le haut : c'est ça qui fait travailler les abdos", "Descente lente, 2 s"],
+      "variants": [
+        { "id": "knees", "name": "Genoux à la poitrine", "coef": 1.0 },
+        { "id": "knees_curl", "name": "Genoux + enroulement du bassin", "coef": 1.2 },
+        { "id": "straight_legs", "name": "Jambes tendues", "coef": 1.4 },
+        { "id": "toes_to_bar", "name": "Orteils à la barre", "coef": 1.8 }
+      ],
+      "defaultVariant": "knees"
+    },
+    "side_plank": {
+      "name": "Gainage latéral",
+      "shortName": "Gainage lat.",
+      "muscles": ["obliques", "abdominaux"],
+      "kind": "core",
+      "loadType": "reps",
+      "unit": "sec",
+      "perSide": true,
+      "ankle": "faible",
+      "ankleNote": "Si l'appui sur le bord du pied fait mal : version sur les genoux.",
+      "cues": ["Coude sous l'épaule", "Corps aligné tête-bassin-pieds", "Bassin haut, ne pas s'affaisser", "Temps par côté"],
+      "variants": [
+        { "id": "knees", "name": "Sur les genoux", "coef": 0.7, "offLadder": true },
+        { "id": "standard", "name": "Sur les pieds", "coef": 1.0 },
+        { "id": "leg_raised", "name": "Jambe du dessus levée", "coef": 1.3 }
+      ],
+      "defaultVariant": "standard"
+    },
+    "lsit": {
+      "name": "L-sit aux barres de dips",
+      "shortName": "L-sit",
+      "muscles": ["abdominaux", "triceps"],
+      "kind": "core",
+      "loadType": "reps",
+      "unit": "sec",
+      "ankle": "aucune",
+      "ankleNote": "Pieds en l'air : aucun appui. Monter sur les barres sans impulsion de jambes.",
+      "cues": ["Bras tendus, épaules basses", "Bassin légèrement en arrière des mains", "Jambes à l'horizontale, pointes tendues"],
+      "variants": [
+        { "id": "tuck", "name": "Genoux repliés (tuck)", "coef": 1.0 },
+        { "id": "one_leg", "name": "Une jambe tendue, alterner", "coef": 1.3 },
+        { "id": "full", "name": "L-sit complet", "coef": 1.7 }
+      ],
+      "defaultVariant": "tuck"
+    },
+    "weighted_crunch": {
+      "name": "Crunch lesté au sol",
+      "shortName": "Crunch",
+      "muscles": ["abdominaux"],
+      "kind": "core",
+      "loadType": "dumbbell",
+      "ankle": "aucune",
+      "cues": ["Haltère tenu contre la poitrine", "Enrouler la colonne, pas tirer sur la nuque", "Pause 1 s en haut, descente 2 s"],
+      "variants": [
+        { "id": "standard", "name": "Haltère sur la poitrine", "coef": 1.0 },
+        { "id": "pause", "name": "Pause 2 s en contraction", "coef": 1.15 },
+        { "id": "overhead", "name": "Haltère bras tendus au-dessus de la tête", "coef": 1.3 }
+      ],
+      "defaultVariant": "standard",
+      "startLoadKg": 6
+    },
+    "glute_bridge_single": {
+      "name": "Pont fessier unilatéral au sol",
+      "shortName": "Pont fessier",
+      "muscles": ["fessiers", "ischios"],
+      "kind": "legs",
+      "loadType": "reps",
+      "ankle": "aucune",
+      "ankleNote": "Uniquement s'il est indolore.",
+      "cues": ["Talon au sol", "Bassin aligné en haut", "Pause 1 s"],
+      "variants": [
+        { "id": "bodyweight", "name": "Poids du corps", "coef": 1.0 },
+        { "id": "pause", "name": "Pause 3 s en haut", "coef": 1.2 }
+      ],
+      "defaultVariant": "bodyweight"
+    },
+    "split_squat": {
+      "name": "Split squat",
+      "shortName": "Split squat",
+      "muscles": ["quadriceps", "fessiers"],
+      "kind": "legs",
+      "loadType": "bodyweight",
+      "bodyweightFactor": 0.8,
+      "ankle": "forte",
+      "cues": ["Pied arrière au sol", "Genou arrière vers le sol", "Buste droit"],
+      "variants": [
+        { "id": "bodyweight", "name": "Poids du corps", "coef": 1.0 },
+        { "id": "dumbbells", "name": "Haltères", "coef": 1.0, "weighted": true }
+      ],
+      "defaultVariant": "bodyweight"
+    },
+    "bulgarian_split_squat": {
+      "name": "Split squat bulgare",
+      "shortName": "Bulgare",
+      "muscles": ["quadriceps", "fessiers"],
+      "kind": "legs",
+      "loadType": "dumbbell",
+      "ankle": "forte",
+      "cues": ["Pied arrière sur la chaise", "Descente contrôlée", "Genou avant dans l'axe du pied"],
+      "variants": [
+        { "id": "dumbbells", "name": "Haltères", "coef": 1.0 },
+        { "id": "tempo", "name": "Tempo (descente 3 s)", "coef": 1.1 }
+      ],
+      "defaultVariant": "dumbbells",
+      "startLoadKg": 6
+    },
+    "single_leg_rdl": {
+      "name": "Soulevé de terre roumain unilatéral",
+      "shortName": "SDT unilat.",
+      "muscles": ["ischios", "fessiers"],
+      "kind": "legs",
+      "loadType": "dumbbell",
+      "ankle": "forte",
+      "cues": ["Dos plat", "Hanches qui reculent", "Genou d'appui légèrement fléchi"],
+      "variants": [
+        { "id": "dumbbells", "name": "Haltères", "coef": 1.0 },
+        { "id": "tempo", "name": "Tempo (descente 3 s)", "coef": 1.1 }
+      ],
+      "defaultVariant": "dumbbells",
+      "startLoadKg": 8
+    }
+  },
+
+  "phases": [
+    {
+      "number": 1,
+      "name": "Adaptation et bases",
+      "goal": "Technique stricte, tendons, valeurs de référence",
+      "sessionsPerWeek": [3],
+      "blocks": [
+        {
+          "id": "base",
+          "name": "Base",
+          "goal": "RIR 2–3, aucun échec",
+          "sessions": {
+            "A": {
+              "name": "Séance A — Tirage",
+              "focus": "Dos · biceps · arrière d'épaule · abdos",
+              "estimatedMin": 31,
+              "slots": [
+                { "exerciseId": "pullup_pronation", "sets": 4, "reps": [3, 6], "rir": [2, 3], "restSec": 120, "onBelowMin": "negatives", "main": true },
+                { "exerciseId": "pullup_supination", "sets": 3, "reps": [4, 8], "rir": [2, 3], "restSec": 120, "onBelowMin": "negatives", "main": true },
+                { "exerciseId": "curl", "sets": 3, "reps": [10, 15], "rir": [2, 2], "restSec": 0, "group": "3" },
+                { "exerciseId": "rear_delt_fly", "sets": 3, "reps": [12, 20], "rir": [2, 2], "restSec": 60, "group": "3" },
+                { "exerciseId": "hanging_knee_raise", "sets": 2, "reps": [8, 15], "rir": [2, 2], "restSec": 0, "group": "abs" },
+                { "exerciseId": "side_plank", "sets": 2, "reps": [20, 45], "rir": [2, 2], "restSec": 45, "group": "abs" },
+                {
+                  "pick": [
+                    { "when": "ankle", "exerciseId": "glute_bridge_single", "reps": [12, 20] },
+                    { "when": "healed_lt4w", "exerciseId": "glute_bridge_single", "reps": [12, 20] },
+                    { "when": "default", "exerciseId": "single_leg_rdl", "reps": [10, 15] }
+                  ],
+                  "sets": 2, "rir": [2, 2], "restSec": 60, "optional": true
+                }
+              ]
+            },
+            "B": {
+              "name": "Séance B — Poussée",
+              "focus": "Pecs · triceps · épaules · abdos",
+              "estimatedMin": 31,
+              "slots": [
+                { "exerciseId": "dips", "sets": 4, "reps": [6, 10], "rir": [2, 3], "restSec": 120, "onBelowMin": "rest_pause", "main": true },
+                { "exerciseId": "pushup", "sets": 3, "reps": [10, 20], "rir": [2, 2], "restSec": 90, "onBelowMin": "rest_pause", "main": true },
+                { "exerciseId": "lateral_raise", "sets": 3, "reps": [12, 20], "rir": [2, 2], "restSec": 0, "group": "3" },
+                { "exerciseId": "triceps_overhead", "sets": 2, "reps": [10, 15], "rir": [2, 2], "restSec": 60, "group": "3" },
+                { "exerciseId": "lsit", "sets": 2, "reps": [10, 30], "rir": [2, 2], "restSec": 0, "group": "abs" },
+                { "exerciseId": "weighted_crunch", "sets": 2, "reps": [10, 20], "rir": [2, 2], "restSec": 45, "group": "abs" },
+                {
+                  "pick": [
+                    { "when": "ankle", "exerciseId": "glute_bridge_single", "reps": [12, 20] },
+                    { "when": "healed_lt4w", "exerciseId": "split_squat", "reps": [10, 15] },
+                    { "when": "default", "exerciseId": "bulgarian_split_squat", "reps": [8, 15] }
+                  ],
+                  "sets": 2, "rir": [2, 2], "restSec": 60, "optional": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "name": "Développement musculaire",
+      "goal": "Le gros de la prise de muscle, volume et intensité en hausse",
+      "sessionsPerWeek": [3, 4],
+      "blocks": [
+        {
+          "id": "base",
+          "name": "Développement",
+          "goal": "RIR 1–2, dernière série d'isolation à RIR 0–1",
+          "sessions": {
+            "A": {
+              "name": "Séance A — Tirage",
+              "focus": "Dos · biceps · épaules · abdos",
+              "estimatedMin": 33,
+              "slots": [
+                { "exerciseId": "pullup_pronation", "sets": 4, "reps": [5, 8], "rir": [1, 2], "restSec": 150, "onBelowMin": "negatives", "main": true },
+                { "exerciseId": "pullup_supination", "sets": 3, "reps": [6, 10], "rir": [1, 2], "restSec": 120, "onBelowMin": "negatives", "main": true },
+                { "exerciseId": "curl", "sets": 3, "reps": [10, 15], "rir": [1, 1], "lastSetRir": 0, "restSec": 0, "group": "3" },
+                { "exerciseId": "rear_delt_fly", "alternatives": ["inverted_row"], "sets": 3, "reps": [12, 20], "rir": [1, 1], "restSec": 0, "group": "3" },
+                { "exerciseId": "lateral_raise", "sets": 2, "reps": [12, 20], "rir": [1, 1], "restSec": 60, "group": "3" },
+                { "exerciseId": "hanging_knee_raise", "sets": 3, "reps": [8, 15], "rir": [1, 2], "restSec": 0, "group": "abs" },
+                { "exerciseId": "side_plank", "sets": 2, "reps": [20, 45], "rir": [1, 2], "restSec": 45, "group": "abs" },
+                {
+                  "pick": [
+                    { "when": "ankle", "exerciseId": "glute_bridge_single", "reps": [12, 20] },
+                    { "when": "healed_lt4w", "exerciseId": "glute_bridge_single", "reps": [12, 20] },
+                    { "when": "default", "exerciseId": "single_leg_rdl", "reps": [10, 15] }
+                  ],
+                  "sets": 2, "rir": [1, 2], "restSec": 60, "optional": true
+                }
+              ]
+            },
+            "B": {
+              "name": "Séance B — Poussée",
+              "focus": "Pecs · triceps · épaules · abdos",
+              "estimatedMin": 33,
+              "slots": [
+                { "exerciseId": "dips", "sets": 4, "reps": [8, 12], "rir": [1, 2], "restSec": 150, "onBelowMin": "rest_pause", "main": true },
+                { "exerciseId": "pushup", "sets": 3, "reps": [8, 15], "rir": [1, 2], "restSec": 90, "onBelowMin": "rest_pause", "main": true },
+                { "exerciseId": "lateral_raise", "sets": 3, "reps": [12, 20], "rir": [1, 1], "lastSetRir": 0, "restSec": 0, "group": "3" },
+                { "exerciseId": "triceps_overhead", "sets": 3, "reps": [10, 15], "rir": [1, 1], "restSec": 60, "group": "3" },
+                { "exerciseId": "lsit", "sets": 3, "reps": [10, 30], "rir": [1, 2], "restSec": 0, "group": "abs" },
+                { "exerciseId": "weighted_crunch", "sets": 2, "reps": [10, 20], "rir": [1, 1], "restSec": 45, "group": "abs" },
+                {
+                  "pick": [
+                    { "when": "ankle", "exerciseId": "glute_bridge_single", "reps": [12, 20] },
+                    { "when": "healed_lt4w", "exerciseId": "split_squat", "reps": [10, 15] },
+                    { "when": "default", "exerciseId": "bulgarian_split_squat", "reps": [8, 15] }
+                  ],
+                  "sets": 2, "rir": [1, 2], "restSec": 60, "optional": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "name": "Difficulté accrue",
+      "goal": "Lest et variantes avancées, blocs Force et Hypertrophie alternés",
+      "sessionsPerWeek": [3, 4],
+      "blocks": [
+        {
+          "id": "force",
+          "name": "Bloc F — Force",
+          "goal": "Force relative, tension maximale",
+          "sessions": {
+            "A": {
+              "name": "Séance A — Tirage (Force)",
+              "focus": "Tractions lestées",
+              "estimatedMin": 30,
+              "slots": [
+                { "exerciseId": "pullup_pronation", "variantHint": "weighted", "sets": 4, "reps": [4, 6], "rir": [1, 2], "restSec": 180, "onBelowMin": "none", "main": true },
+                { "exerciseId": "pullup_supination", "sets": 2, "reps": [8, 12], "rir": [1, 1], "restSec": 120, "main": true },
+                { "exerciseId": "curl", "sets": 3, "reps": [8, 12], "rir": [0, 1], "restSec": 0, "group": "3" },
+                { "exerciseId": "rear_delt_fly", "alternatives": ["inverted_row", "lateral_raise"], "sets": 3, "reps": [12, 20], "rir": [1, 1], "restSec": 60, "group": "3" },
+                { "exerciseId": "hanging_knee_raise", "sets": 3, "reps": [8, 15], "rir": [1, 1], "restSec": 0, "group": "abs" },
+                { "exerciseId": "side_plank", "sets": 2, "reps": [20, 45], "rir": [1, 1], "restSec": 45, "group": "abs" }
+              ]
+            },
+            "B": {
+              "name": "Séance B — Poussée (Force)",
+              "focus": "Dips lestés",
+              "estimatedMin": 30,
+              "slots": [
+                { "exerciseId": "dips", "variantHint": "weighted", "sets": 4, "reps": [5, 8], "rir": [1, 2], "restSec": 180, "onBelowMin": "none", "main": true },
+                { "exerciseId": "pushup", "sets": 3, "reps": [6, 12], "rir": [1, 1], "restSec": 90, "main": true },
+                { "exerciseId": "lateral_raise", "sets": 3, "reps": [12, 20], "rir": [0, 1], "restSec": 0, "group": "3" },
+                { "exerciseId": "triceps_overhead", "sets": 2, "reps": [10, 15], "rir": [1, 1], "restSec": 60, "group": "3" },
+                { "exerciseId": "lsit", "sets": 3, "reps": [10, 30], "rir": [1, 1], "restSec": 0, "group": "abs" },
+                { "exerciseId": "weighted_crunch", "sets": 2, "reps": [10, 20], "rir": [1, 1], "restSec": 45, "group": "abs" },
+                {
+                  "pick": [
+                    { "when": "ankle", "exerciseId": "glute_bridge_single", "reps": [12, 20] },
+                    { "when": "healed_lt4w", "exerciseId": "split_squat", "reps": [10, 15] },
+                    { "when": "default", "exerciseId": "bulgarian_split_squat", "reps": [8, 15] }
+                  ],
+                  "sets": 2, "rir": [1, 1], "restSec": 60, "optional": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "hypertrophie",
+          "name": "Bloc H — Hypertrophie",
+          "goal": "Volume, croissance, variantes dures",
+          "sessions": {
+            "A": {
+              "name": "Séance A — Tirage (Hypertrophie)",
+              "focus": "Dos · biceps · épaules",
+              "estimatedMin": 30,
+              "slots": [
+                { "exerciseId": "pullup_pronation", "sets": 4, "reps": [6, 10], "rir": [1, 1], "restSec": 120, "onBelowMin": "negatives", "main": true },
+                { "exerciseId": "pullup_supination", "sets": 3, "reps": [6, 10], "rir": [1, 1], "restSec": 120, "main": true },
+                { "exerciseId": "curl", "sets": 3, "reps": [10, 15], "rir": [0, 1], "lastSetRir": 0, "restSec": 0, "group": "3" },
+                { "exerciseId": "rear_delt_fly", "alternatives": ["inverted_row"], "sets": 3, "reps": [12, 20], "rir": [0, 1], "restSec": 0, "group": "3" },
+                { "exerciseId": "lateral_raise", "sets": 2, "reps": [12, 20], "rir": [0, 1], "restSec": 60, "group": "3" },
+                { "exerciseId": "hanging_knee_raise", "sets": 3, "reps": [8, 15], "rir": [0, 1], "restSec": 0, "group": "abs" },
+                { "exerciseId": "side_plank", "sets": 2, "reps": [20, 45], "rir": [1, 1], "restSec": 45, "group": "abs" },
+                {
+                  "pick": [
+                    { "when": "ankle", "exerciseId": "glute_bridge_single", "reps": [12, 20] },
+                    { "when": "healed_lt4w", "exerciseId": "glute_bridge_single", "reps": [12, 20] },
+                    { "when": "default", "exerciseId": "single_leg_rdl", "reps": [10, 15] }
+                  ],
+                  "sets": 2, "rir": [1, 1], "restSec": 60, "optional": true
+                }
+              ]
+            },
+            "B": {
+              "name": "Séance B — Poussée (Hypertrophie)",
+              "focus": "Pecs · triceps · épaules",
+              "estimatedMin": 30,
+              "slots": [
+                { "exerciseId": "dips", "sets": 4, "reps": [6, 10], "rir": [1, 1], "restSec": 120, "onBelowMin": "rest_pause", "main": true },
+                { "exerciseId": "pushup", "sets": 3, "reps": [8, 15], "rir": [1, 1], "restSec": 90, "main": true },
+                { "exerciseId": "lateral_raise", "sets": 3, "reps": [12, 20], "rir": [0, 1], "lastSetRir": 0, "restSec": 0, "group": "3" },
+                { "exerciseId": "triceps_overhead", "sets": 3, "reps": [10, 15], "rir": [0, 1], "restSec": 60, "group": "3" },
+                { "exerciseId": "lsit", "sets": 3, "reps": [10, 30], "rir": [1, 1], "restSec": 0, "group": "abs" },
+                { "exerciseId": "weighted_crunch", "sets": 2, "reps": [10, 20], "rir": [0, 1], "restSec": 45, "group": "abs" },
+                {
+                  "pick": [
+                    { "when": "ankle", "exerciseId": "glute_bridge_single", "reps": [12, 20] },
+                    { "when": "healed_lt4w", "exerciseId": "split_squat", "reps": [10, 15] },
+                    { "when": "default", "exerciseId": "bulgarian_split_squat", "reps": [8, 15] }
+                  ],
+                  "sets": 2, "rir": [1, 1], "restSec": 60, "optional": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+
+  "commonSessions": {
+    "F": {
+      "name": "Séance F — Full body",
+      "focus": "Semaines à 2 séances",
+      "estimatedMin": 25,
+      "slots": [
+        { "exerciseId": "pullup_pronation", "sets": 3, "reps": "phase", "rir": "phase", "restSec": 120, "onBelowMin": "negatives", "main": true },
+        { "exerciseId": "dips", "sets": 3, "reps": "phase", "rir": "phase", "restSec": 120, "onBelowMin": "rest_pause", "main": true },
+        { "exerciseId": "curl", "sets": 2, "reps": [10, 15], "rir": "phase", "restSec": 0, "group": "3" },
+        { "exerciseId": "lateral_raise", "sets": 2, "reps": [12, 20], "rir": "phase", "restSec": 60, "group": "3" },
+        { "exerciseId": "pushup", "sets": 2, "reps": "phase", "rir": "phase", "restSec": 90, "main": true },
+        { "exerciseId": "hanging_knee_raise", "sets": 2, "reps": "phase", "rir": "phase", "restSec": 0, "group": "abs" },
+        { "exerciseId": "weighted_crunch", "sets": 2, "reps": "phase", "rir": "phase", "restSec": 45, "group": "abs" }
+      ]
+    },
+    "MIN": {
+      "name": "Séance minimale",
+      "focus": "Maintien en 15 min",
+      "estimatedMin": 15,
+      "slots": [
+        { "exerciseId": "pullup_pronation", "sets": 2, "reps": "phase", "rir": [2, 2], "restSec": 120, "main": true },
+        { "exerciseId": "dips", "sets": 2, "reps": "phase", "rir": [2, 2], "restSec": 90, "main": true },
+        { "exerciseId": "hanging_knee_raise", "sets": 2, "reps": "phase", "rir": [2, 2], "restSec": 45 }
+      ]
+    }
+  },
+
+  "phaseTransitions": [
+    {
+      "from": 1,
+      "to": 2,
+      "criteria": [
+        { "type": "minWeeks", "value": 5 },
+        { "type": "adherence", "pct": 80, "weeks": 4 },
+        {
+          "type": "atLeast",
+          "count": 2,
+          "items": [
+            { "type": "test", "test": "pullup_max", "min": 8 },
+            { "type": "test", "test": "dips_max", "min": 15 },
+            { "type": "test", "test": "pushup_max", "min": 25 }
+          ]
+        },
+        { "type": "noJointPain", "maxPain": 3, "weeks": 2 }
+      ],
+      "fallback": { "afterWeeks": 12, "requireProgress": true }
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "criteria": [
+        { "type": "minWeeks", "value": 12 },
+        {
+          "type": "anyOf",
+          "items": [
+            { "type": "sessionTopReached", "exerciseId": "pullup_pronation", "sets": 4, "reps": 8 },
+            { "type": "test", "test": "pullup_max", "min": 12 }
+          ]
+        },
+        {
+          "type": "anyOf",
+          "items": [
+            { "type": "sessionTopReached", "exerciseId": "dips", "sets": 4, "reps": 12 },
+            { "type": "test", "test": "dips_max", "min": 20 }
+          ]
+        },
+        { "type": "noJointPain", "maxPain": 3, "weeks": 2 }
+      ]
+    }
+  ],
+
+  "cycle": { "weeks": 6, "deloadWeek": 6 },
+
+  "deload": { "setsFactor": 0.5, "minSetsMain": 2, "repsAt": "min", "loadReducePct": 15, "rir": [3, 4] },
+
+  "rules": {
+    "R1": { "progressFeelings": ["facile", "correct"], "repIncrement": 1, "secIncrement": 5 },
+    "R2": { "consecutiveBelowMin": 2, "loadReducePct": 5 },
+    "R3": { "exposures": 3, "clusterWeeks": 2, "multipleStallTriggersDeload": 2 },
+    "R4": {
+      "perfDropPct": 10,
+      "comparedToLastExposures": 3,
+      "consecutiveDrops": 2,
+      "lowReadinessSessions": 3,
+      "jointPainThreshold": 4,
+      "jointPainSessions": 2
+    },
+    "R5": { "epleyDivisor": 30 },
+    "R6": {
+      "lowScoreMax": 7,
+      "reducedSetsDelta": -1,
+      "reducedRirDelta": 1,
+      "jointPainStop": 4,
+      "ankleReactivatePain": 3,
+      "mmaHardWithinHours": 24
+    },
+    "R8": {
+      "reducedAfterDays": 10,
+      "longBreaks": [
+        { "minDays": 14, "action": "reduced_week" },
+        { "minDays": 28, "action": "step_back_phase2" },
+        { "minDays": 90, "action": "restart_phase1" }
+      ],
+      "resumeWithinHours": 12
+    }
+  },
+
+  "mma": {
+    "loadUnits": { "mma_technique": 1, "mma_intense": 2, "strength": 1, "strength_weighted": 1.5, "minimal": 0.5 },
+    "budget": { "startUnits": 6, "adaptedUnits": 8, "adaptationWeeks": 6 },
+    "adjustments": [
+      { "minMmaPerWeek": 1, "strengthSessions": 3, "format": "AB", "setsDelta": -1, "setsDeltaScope": "first", "rirDelta": 0, "forbidRirZero": false },
+      { "minMmaPerWeek": 2, "strengthSessions": 3, "format": "AB", "setsDelta": -1, "setsDeltaScope": "main", "rirDelta": 1, "forbidRirZero": false },
+      { "minMmaPerWeek": 3, "strengthSessions": 2, "format": "F", "setsDelta": -1, "setsDeltaScope": "all", "rirDelta": 1, "forbidRirZero": true }
+    ],
+    "placement": { "noPullBeforeHardMma": true, "noStrengthOnHardMmaDay": true, "minFullRestDays": 1, "sameDayMinGapHours": 6 },
+    "activation": { "minPerWeek": 1, "exitAfterWeeksWithout": 2 }
+  },
+
+  "tests": [
+    { "id": "pullup_max", "name": "Tractions pronation max", "exerciseId": "pullup_pronation", "variant": "strict", "session": "A", "unit": "reps", "fromPhase": 1 },
+    { "id": "dips_max", "name": "Dips max", "exerciseId": "dips", "variant": "strict", "session": "B", "unit": "reps", "fromPhase": 1 },
+    { "id": "pushup_max", "name": "Pompes classiques max", "exerciseId": "pushup", "variant": "classic", "session": "B", "unit": "reps", "fromPhase": 1, "restBeforeSec": 300 },
+    { "id": "pullup_3rm", "name": "Tractions lestées 3RM", "exerciseId": "pullup_pronation", "variant": "weighted", "session": "A", "unit": "kg", "fromPhase": 3, "optional": true }
+  ],
+
+  "body": {
+    "targetWeightKg": 78,
+    "waistToHeightMax": 0.5,
+    "lossRatePctPerWeek": [0.3, 0.7],
+    "fastLossAlertPctPerWeek": 1.0,
+    "maintenanceBreakAtKg": 82,
+    "checkpointKg": 80,
+    "proteinGPerKg": [1.6, 2.2],
+    "measureEveryDays": 14,
+    "photoEveryDays": 28
+  },
+
+  "schedule": {
+    "defaultSessionsPerWeek": 3,
+    "defaultDays": { "2": [2, 5], "3": [1, 3, 5], "4": [1, 2, 4, 5] },
+    "minHoursBetweenSameType": 48,
+    "maxConsecutiveDays": 2
+  },
+
+  "reminders": [
+    { "kind": "session_today", "label": "Séance du jour", "enabled": true, "time": "18:00", "days": "training", "message": "Séance {seance} aujourd'hui · {duree} min. {exercice1} en premier." },
+    { "kind": "session_missed", "label": "Séance non faite", "enabled": true, "time": "21:00", "days": "training", "onlyIfNotDone": true, "message": "Toujours pas fait ? Même la séance minimale (15 min) compte." },
+    { "kind": "weigh_in", "label": "Pesée", "enabled": true, "time": "07:30", "days": [1, 3, 5], "message": "Pesée au réveil, avant de manger." },
+    { "kind": "measurements", "label": "Mensurations", "enabled": true, "time": "10:00", "days": [7], "everyDays": 14, "message": "Tour de taille et mensurations du jour." },
+    { "kind": "test_week", "label": "Semaine de tests", "enabled": true, "time": "08:00", "days": [1], "message": "Semaine de décharge + tests de max. Lève le pied, tu vas battre tes records." },
+    { "kind": "photo", "label": "Photo de suivi", "enabled": false, "time": "10:00", "days": [7], "everyDays": 28, "message": "Photo de suivi, même endroit, même lumière." },
+    { "kind": "backup", "label": "Sauvegarde", "enabled": true, "time": "20:00", "days": [7], "everyDays": 14, "message": "Pense à exporter ta sauvegarde (Réglages → Sauvegarde)." }
+  ]
+}
