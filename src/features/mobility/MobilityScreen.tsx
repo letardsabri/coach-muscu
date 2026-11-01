@@ -11,6 +11,7 @@ import { weekStart } from '../../engine/schedule';
 import { dayKey } from '../../lib/dates';
 import { LineChart } from '../../ui/charts';
 import { NumberField, Sheet } from '../../ui/components';
+import { Illustration } from '../../ui/Illustration';
 import { shortDate } from '../progress/stats';
 import { addFlexTest, deleteFlexTest } from './mobilityRepo';
 
@@ -34,6 +35,7 @@ export function MobilityScreen(props: { profile: Profile; recommended?: StretchR
           ‹ Retour
         </button>
         <h1 className="screen-title">Souplesse</h1>
+        <Illustration kind="seances" id="souplesse" alt="Souplesse" size="header" />
         <p className="muted" style={{ fontSize: 14, marginTop: -8 }}>
           Kicks hauts, teeps, garde au sol, sprawl, grappling. Séances à part entière, jamais juste avant la muscu ou le MMA : un jour sans
           entraînement, ou le soir.
@@ -130,6 +132,7 @@ export function MobilityScreen(props: { profile: Profile; recommended?: StretchR
                     const used = resolveExercise(e.id, souplesse, props.profile.ankleMode);
                     return (
                       <article key={e.id} className="ex-info">
+                        <Illustration kind="souplesse" id={e.id} alt={e.nom} size="large" className="illu-info" />
                         <b>
                           {e.nom}
                           {e.alerte && <span className="chip chip-warn" style={{ marginLeft: 6 }}>{e.alerte}</span>}

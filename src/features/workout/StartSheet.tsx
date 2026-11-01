@@ -3,13 +3,14 @@
  * Le plan affiché se recalcule en direct avec les ajustements qu'elle entraîne.
  */
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { programme } from '../../data/programme';
 import { db } from '../../db/db';
 import type { Readiness, SetLog } from '../../db/models';
 import { buildPlan, type PlannableType } from '../../engine/planner';
 import { DEFAULT_READINESS } from '../../engine/readiness';
 import { weekStart } from '../../engine/schedule';
+import { Illustration } from '../../ui/Illustration';
 import { addDays, dayKey } from '../../lib/dates';
 import { unlockAudio } from '../../lib/device';
 import { Scale, Segmented, Sheet, Stepper, Toggle } from '../../ui/components';
@@ -126,6 +127,7 @@ export function StartSheet(props: { initialType: PlannableType; suggestedType: '
       <Stepper label="Poids ce matin (optionnel)" value={weight} onChange={setWeight} step={0.1} min={40} max={200} unit="kg" size="md" />
 
       <div className="card">
+        <Illustration kind="seances" id={type} alt={planned.name} size="header" />
         <div className="spread">
           <h3 style={{ fontWeight: 800 }}>{planned.name}</h3>
           <span className="chip num">~{planned.estimatedMin} min</span>
@@ -148,13 +150,22 @@ export function StartSheet(props: { initialType: PlannableType; suggestedType: '
         )}
         <ul className="ex-list">
           {planned.plan.map((pe, i) => (
-            <li key={i} className={pe.group ? 'superset' : undefined}>
-              <span className="ex-name">
-                {pe.name}
-                <small>{pe.variantName}</small>
-              </span>
-              <span className="ex-dose num">{formatDose(pe)}</span>
-            </li>
+            <Fragment key={i}>
+              {pe.group === 'abs' && planned.plan[i - 1]?.group !== 'abs' && (
+              <li className="ex-block" aria-hidden>
+                <Illustration kind="seances" id="abdos" alt="Abdos" size="banner" />
+                <span className="ex-block-label">Abdos</span>
+              </li>
+            )}
+              <li className={`with-illu${pe.group ? ' superset' : ''}`}>
+                <Illustration kind="exercices" id={pe.exerciseId} alt={pe.name} size="thumb" />
+                <span className="ex-name">
+                  {pe.name}
+                  <small>{pe.variantName}</small>
+                </span>
+                <span className="ex-dose num">{formatDose(pe)}</span>
+              </li>
+            </Fragment>
           ))}
         </ul>
       </div>

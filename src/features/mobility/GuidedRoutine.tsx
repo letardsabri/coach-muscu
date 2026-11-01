@@ -11,6 +11,7 @@ import type { MobilityFeeling, Profile } from '../../db/models';
 import { buildTimeline, currentRep, defaultMobilitySettings, positionAt, positionsReached, startOfStep, type TimelineStep } from '../../engine/mobility';
 import { formatClock } from '../../lib/dates';
 import { playTick, unlockAudio, useNow, useWakeLock } from '../../lib/device';
+import { Illustration } from '../../ui/Illustration';
 import { saveMobilitySession } from './mobilityRepo';
 
 const PHASE_COLORS: Record<string, string> = { contract: 'var(--warn)', relax: 'var(--ok)' };
@@ -137,6 +138,7 @@ export function GuidedRoutine({ routine, profile, onExit }: { routine: Seance; p
           </p>
         )}
         <section className="ex-head" style={{ textAlign: 'center' }}>
+          <Illustration kind="souplesse" id={step.exercise.id} alt={step.exercise.nom} size="large" />
           <h1>{step.exercise.nom}</h1>
           <p className="variant">
             {sideLabel(step)}

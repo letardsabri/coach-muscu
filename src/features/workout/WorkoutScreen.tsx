@@ -9,6 +9,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useRef, useState } from 'react';
 import { programme } from '../../data/programme';
+import { Illustration } from '../../ui/Illustration';
 import { db } from '../../db/db';
 import type { PlannedExercise, Profile, Session, SetLog } from '../../db/models';
 import { buildSequence, nextStep, stepAfter, stepKey, type Step } from '../../engine/sequence';
@@ -305,6 +306,7 @@ function ExerciseView(props: {
 
         <section className="ex-head">
           {isNewExercise && props.resting && <p className="eyebrow">Ensuite</p>}
+          <Illustration kind="exercices" id={pe.exerciseId} alt={pe.name} size="large" />
           <h1>{pe.name}</h1>
           <p className="variant">
             {pe.variantName}

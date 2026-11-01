@@ -3,7 +3,7 @@
  * le poids et les performances.
  */
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { programme } from '../../data/programme';
 import { backupFileName, exportBackup, markBackupDone } from '../../db/backup';
 import { db } from '../../db/db';
@@ -15,6 +15,7 @@ import { buildPlan, buildTestPlan, type PlannableType } from '../../engine/plann
 import { DEFAULT_READINESS } from '../../engine/readiness';
 import { unlockAudio } from '../../lib/device';
 import { Recommendations } from '../coach/Recommendations';
+import { Illustration } from '../../ui/Illustration';
 import { MobilityCard } from '../mobility/MobilityCard';
 import { ReviewCard } from '../progress/ReviewView';
 import { NutritionCard } from '../nutrition/NutritionCard';
@@ -108,6 +109,7 @@ export function Home({ onResume, onNavigate }: { onResume: () => void; onNavigat
         </section>
       ) : (
         <section className="card card-accent">
+          <Illustration kind="seances" id={type} alt={preview.name} size="header" />
           <div className="spread">
             <div>
               <p className="eyebrow" style={{ color: 'var(--accent)' }}>
@@ -120,10 +122,19 @@ export function Home({ onResume, onNavigate }: { onResume: () => void; onNavigat
           </div>
           <ul className="ex-list">
             {preview.plan.map((pe, i) => (
-              <li key={i} className={pe.group ? 'superset' : undefined}>
-                <span className="ex-name">{pe.name}</span>
-                <span className="ex-dose num">{formatDose(pe)}</span>
+              <Fragment key={i}>
+                {pe.group === 'abs' && preview.plan[i - 1]?.group !== 'abs' && (
+              <li className="ex-block" aria-hidden>
+                <Illustration kind="seances" id="abdos" alt="Abdos" size="banner" />
+                <span className="ex-block-label">Abdos</span>
               </li>
+            )}
+                <li className={`with-illu${pe.group ? ' superset' : ''}`}>
+                  <Illustration kind="exercices" id={pe.exerciseId} alt={pe.name} size="thumb" />
+                  <span className="ex-name">{pe.name}</span>
+                  <span className="ex-dose num">{formatDose(pe)}</span>
+                </li>
+              </Fragment>
             ))}
           </ul>
           <button className="btn-primary" onClick={() => setStarting(type)}>

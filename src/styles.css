@@ -1876,3 +1876,117 @@ p {
   gap: 12px;
   font-size: 15px;
 }
+
+/* Illustrations (étape 5) : SVG provisoires ou WebP, placeholder si absente */
+.illu {
+  display: block;
+  border-radius: 14px;
+  background: #141416;
+  object-fit: contain;
+}
+
+.illu-thumb {
+  width: 48px;
+  height: 32px;
+  border-radius: 8px;
+  flex: none;
+}
+
+.illu-large {
+  width: 100%;
+  max-width: 330px;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  margin: 0 auto;
+}
+
+.illu-header {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 360 / 140;
+  border-radius: 16px;
+}
+
+.illu-placeholder {
+  display: grid;
+  place-items: center;
+  position: relative;
+  border: 1.5px dashed var(--border);
+  background: var(--surface-2);
+  color: var(--text-3);
+}
+
+.illu-placeholder svg {
+  width: 40%;
+  max-width: 64px;
+  height: 70%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 4 4;
+}
+
+.illu-placeholder circle {
+  stroke-dasharray: none;
+}
+
+.illu-placeholder span {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--text-3);
+}
+
+.illu-thumb.illu-placeholder svg {
+  width: 70%;
+  stroke-width: 4;
+}
+
+
+.ex-list li.with-illu {
+  display: flex;
+  align-items: center;
+}
+
+.ex-list li.with-illu .ex-name {
+  flex: 1;
+}
+
+.ex-head .illu-large {
+  max-width: 250px;
+  margin-bottom: 8px;
+}
+
+.guided-body .illu-large {
+  max-width: 180px;
+}
+
+.illu-banner {
+  width: 128px;
+  height: 50px;
+  flex: none;
+  border-radius: 10px;
+}
+
+.ex-list li.ex-block {
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px 0 4px;
+  border-bottom: 0;
+}
+
+.ex-block-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.ex-info .illu-info {
+  max-width: 200px;
+  margin: 4px 0;
+}

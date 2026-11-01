@@ -31,7 +31,10 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2,json}'],
+        // Illustrations (SVG provisoires, WebP plus tard) précachées : disponibles hors ligne dès l'installation.
+        globPatterns: ['**/*.{js,css,html,svg,png,webp,woff2,json}'],
+        globIgnores: ['illustrations/planche.html'],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         navigateFallback: 'index.html',
         // Réception des notifications de fin de repos (public/push-sw.js).
         importScripts: ['push-sw.js'],
