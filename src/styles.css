@@ -1710,3 +1710,98 @@ p {
 .water-buttons button:active {
   background: var(--water);
 }
+
+/* ------------------------------------------------------------------ */
+/* Mobilité                                                            */
+/* ------------------------------------------------------------------ */
+
+.overlay-screen {
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+.chip-reco {
+  background: transparent;
+  border: 1.5px dashed var(--text-3);
+  color: var(--text-2);
+}
+
+.warmup-link {
+  align-self: flex-start;
+  padding: 0;
+  font-size: 15px;
+}
+
+.guided-body {
+  align-items: stretch;
+  gap: 12px;
+}
+
+.guided-body .eyebrow {
+  text-align: center;
+  font-size: 15px;
+}
+
+.guided-timer {
+  text-align: center;
+  font-size: 104px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--text);
+}
+
+.guided-timer.prep {
+  color: var(--text-3);
+}
+
+.guided-cues {
+  gap: 8px;
+  font-size: 15px;
+}
+
+.guided-actions {
+  flex-direction: row;
+  align-items: center;
+}
+
+.guided-actions .btn-secondary {
+  width: 72px;
+  flex: none;
+  min-height: 60px;
+  font-size: 28px;
+}
+
+.guided-actions .btn-primary {
+  flex: 1;
+}
+
+.zone {
+  border-bottom: 1px solid var(--border);
+}
+
+.zone:last-child {
+  border-bottom: 0;
+}
+
+.zone-head {
+  width: 100%;
+  min-height: 48px;
+}
+
+.ex-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 0 12px;
+  font-size: 14px;
+  border-top: 1px dashed var(--border);
+}
+
+.ex-info p {
+  color: var(--text);
+}
+
+.ex-info p.muted {
+  color: var(--text-2);
+}

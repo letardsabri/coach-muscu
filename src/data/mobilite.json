@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "_format": "secondes = temps de maintien de base (niveau 0) par côté et par passage. Les positions statiques gagnent +15 s par niveau de progression (max 60 s). cheville : aucune | faible | forte ; en mode cheville, « forte » est remplacé par « remplacement », et la note cheville s'affiche.",
+
+  "settings": {
+    "prepSec": 5,
+    "levelStepSec": 15,
+    "maxHoldSec": 60,
+    "maxLevel": 2,
+    "easyToLevelUp": 2,
+    "pnf": { "stretchSec": 20, "contractSec": 6, "relaxSec": 20 },
+    "weeklyTarget": { "min": 3, "max": 5 }
+  },
+
+  "zones": [
+    { "id": "hanches", "label": "Hanches & adducteurs" },
+    { "id": "flechisseurs", "label": "Fléchisseurs de hanche" },
+    { "id": "ischios", "label": "Ischios & fessiers" },
+    { "id": "haut", "label": "Haut du corps" },
+    { "id": "echauffement", "label": "Échauffement" }
+  ],
+
+  "exercices": [
+    {
+      "id": "rotations_hanches", "nom": "Rotations de hanches", "zone": "echauffement", "type": "dynamique", "cotes": false,
+      "description": "Debout, mains sur les hanches, grands cercles du bassin dans un sens puis dans l'autre.",
+      "consigne": "Amplitude progressive, genoux légèrement fléchis.",
+      "erreur": "Bouger seulement le buste au lieu du bassin.",
+      "cheville": "forte", "remplacement": "rotations_hanches_4p",
+      "noteCheville": "Debout, les deux chevilles portent le poids du corps en rotation."
+    },
+    {
+      "id": "rotations_hanches_4p", "nom": "Cercles de hanches à quatre pattes", "zone": "echauffement", "type": "dynamique", "cotes": true,
+      "description": "À quatre pattes, lève un genou et dessine de grands cercles avec, vers l'avant puis vers l'arrière.",
+      "consigne": "Dos plat, le mouvement vient de la hanche.",
+      "erreur": "Creuser le dos pour aller plus loin.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "balanciers_jambes", "nom": "Balanciers de jambes", "zone": "echauffement", "type": "dynamique", "cotes": true,
+      "description": "Debout, une main sur un support, balance une jambe d'avant en arrière, de plus en plus haut.",
+      "consigne": "Mouvement contrôlé, buste droit.",
+      "erreur": "Lancer la jambe trop fort dès le départ.",
+      "cheville": "forte", "remplacement": "balanciers_allonge",
+      "noteCheville": "Debout sur une jambe : la cheville porte tout le poids."
+    },
+    {
+      "id": "balanciers_allonge", "nom": "Balanciers allongé sur le côté", "zone": "echauffement", "type": "dynamique", "cotes": true,
+      "description": "Allongé sur le côté, jambe du dessus tendue, balance-la d'avant en arrière.",
+      "consigne": "Bassin stable, ne roule pas en arrière.",
+      "erreur": "Plier le genou pour aller plus loin.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "cercles_epaules", "nom": "Cercles d'épaules", "zone": "echauffement", "type": "dynamique", "cotes": false,
+      "description": "Bras tendus, grands cercles vers l'avant puis vers l'arrière, en ouvrant bien la poitrine.",
+      "consigne": "Grands cercles lents, épaules basses.",
+      "erreur": "Hausser les épaules vers les oreilles.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "chat_vache", "nom": "Chat-vache", "zone": "haut", "type": "dynamique", "cotes": false,
+      "description": "À quatre pattes, arrondis le dos en expirant puis creuse-le en inspirant, vertèbre par vertèbre.",
+      "consigne": "Lent, synchronisé avec la respiration.",
+      "erreur": "Ne bouger que la nuque.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "mobilite_cou", "nom": "Mobilité du cou", "zone": "haut", "type": "dynamique", "cotes": false,
+      "description": "Assis, incline lentement la tête d'un côté, de l'autre, puis menton vers la poitrine. Pas de grands cercles rapides.",
+      "consigne": "Très doux, aucune douleur.",
+      "erreur": "Forcer en tirant la tête avec la main.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "papillon", "nom": "Papillon", "zone": "hanches", "type": "statique", "cotes": false,
+      "description": "Assis, plantes de pieds collées, talons proches du bassin, laisse les genoux descendre vers le sol.",
+      "consigne": "Dos long, penche-toi en avant depuis les hanches.",
+      "erreur": "Appuyer fort sur les genoux avec les coudes.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "grenouille", "nom": "Grenouille (frog stretch)", "zone": "hanches", "type": "statique", "cotes": false,
+      "description": "À quatre pattes sur les avant-bras, écarte les genoux au maximum, chevilles alignées avec les genoux, recule doucement le bassin.",
+      "consigne": "Genoux sur un tapis, recule le bassin lentement.",
+      "erreur": "Creuser le bas du dos.",
+      "cheville": "faible", "noteCheville": "Le bord interne de la cheville est au sol : ajoute un coussin."
+    },
+    {
+      "id": "straddle", "nom": "Écart assis (straddle / pancake)", "zone": "hanches", "type": "statique", "cotes": false, "pnf": true,
+      "description": "Assis jambes tendues écartées au maximum, avance le buste vers le sol, dos le plus plat possible.",
+      "consigne": "Pointes de pieds vers le plafond, bascule le bassin vers l'avant.",
+      "erreur": "Arrondir le dos pour descendre la tête.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "hanches_90_90", "nom": "90/90 hanches", "zone": "hanches", "type": "statique", "cotes": true,
+      "description": "Assis, jambe avant pliée à 90° devant toi, jambe arrière pliée à 90° sur le côté. Penche le buste au-dessus du tibia avant.",
+      "consigne": "Les deux fesses au sol, buste droit puis penché.",
+      "erreur": "Laisser une fesse décoller.",
+      "cheville": "faible", "noteCheville": "Chevilles posées sur le côté : arrête si ça tire sur la cheville."
+    },
+    {
+      "id": "pigeon", "nom": "Pigeon au sol", "zone": "hanches", "type": "statique", "cotes": true,
+      "description": "Jambe avant pliée devant toi, jambe arrière tendue derrière. Descends le buste vers l'avant.",
+      "consigne": "Bassin d'équerre, pied avant fléchi.",
+      "erreur": "Laisser le bassin basculer sur le côté.",
+      "cheville": "faible", "noteCheville": "Si la cheville avant tire, fais la « figure 4 allongé » à la place."
+    },
+    {
+      "id": "fente_genou_sol", "nom": "Fente genou au sol", "zone": "flechisseurs", "type": "statique", "cotes": true,
+      "description": "Un genou au sol, l'autre pied devant. Serre les fessiers et avance le bassin.",
+      "consigne": "Contracte le fessier de la jambe arrière, bassin rentré.",
+      "erreur": "Creuser le bas du dos au lieu d'avancer le bassin.",
+      "cheville": "faible", "noteCheville": "Mets la jambe blessée derrière, genou sur un coussin, pour ne pas charger la cheville avant."
+    },
+    {
+      "id": "couch_stretch", "nom": "Couch stretch", "zone": "flechisseurs", "type": "statique", "cotes": true,
+      "description": "Genou arrière au pied d'un mur, tibia contre le mur, l'autre pied devant. Redresse le buste.",
+      "consigne": "Fessier contracté, buste qui se redresse progressivement.",
+      "erreur": "Aller trop loin d'un coup.",
+      "cheville": "forte", "remplacement": "fente_genou_sol",
+      "noteCheville": "Attention cheville : le pied arrière est en extension forcée contre le mur."
+    },
+    {
+      "id": "ischios_sangle", "nom": "Ischios avec sangle", "zone": "ischios", "type": "statique", "cotes": true, "pnf": true,
+      "description": "Allongé sur le dos, une sangle (ceinture, serviette) sous le pied, monte la jambe tendue vers toi.",
+      "consigne": "Jambe au sol tendue, bas du dos plaqué.",
+      "erreur": "Plier le genou de la jambe étirée.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "figure_4", "nom": "Figure 4 allongé", "zone": "ischios", "type": "statique", "cotes": true,
+      "description": "Allongé sur le dos, cheville posée sur le genou opposé, ramène les deux jambes vers toi.",
+      "consigne": "Tête et épaules au sol, relâche.",
+      "erreur": "Tirer avec la nuque.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "suspension_passive", "nom": "Suspension passive à la barre", "zone": "haut", "type": "statique", "cotes": false,
+      "description": "Suspendu à la barre de traction, bras tendus, laisse les épaules monter et le dos s'étirer.",
+      "consigne": "Relâche tout le corps, respire.",
+      "erreur": "Se balancer.",
+      "cheville": "faible", "noteCheville": "Monte et descends par la chaise, jamais en sautant."
+    },
+    {
+      "id": "pecs_barres", "nom": "Étirement pectoraux aux barres", "zone": "haut", "type": "statique", "cotes": false,
+      "description": "Entre les barres de dips (ou dans un encadrement de porte), avant-bras sur les supports, avance doucement la poitrine.",
+      "consigne": "Coudes à hauteur d'épaules, avance lentement.",
+      "erreur": "Hausser les épaules.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "thread_needle", "nom": "Thread the needle", "zone": "haut", "type": "statique", "cotes": true,
+      "description": "À quatre pattes, glisse un bras sous l'autre, épaule et tempe au sol, et tourne le haut du dos.",
+      "consigne": "Hanches au-dessus des genoux.",
+      "erreur": "Reculer les hanches.",
+      "cheville": "aucune"
+    }
+  ],
+
+  "routines": [
+    {
+      "id": "express", "nom": "Mobilité express", "quand": "Échauffement avant muscu ou MMA", "type": "echauffement",
+      "elements": [
+        { "exercice": "rotations_hanches", "secondes": 45 },
+        { "exercice": "balanciers_jambes", "secondes": 30 },
+        { "exercice": "cercles_epaules", "secondes": 45 },
+        { "exercice": "chat_vache", "secondes": 60 },
+        { "exercice": "mobilite_cou", "secondes": 30 }
+      ]
+    },
+    {
+      "id": "hanches", "nom": "Souplesse hanches MMA", "quand": "Fin de journée ou jour de repos", "type": "souplesse",
+      "elements": [
+        { "exercice": "papillon", "secondes": 45, "passages": 2 },
+        { "exercice": "grenouille", "secondes": 45, "passages": 2 },
+        { "exercice": "hanches_90_90", "secondes": 45 },
+        { "exercice": "pigeon", "secondes": 45 },
+        { "exercice": "fente_genou_sol", "secondes": 45 },
+        { "exercice": "straddle", "secondes": 45, "passages": 2 },
+        { "exercice": "ischios_sangle", "secondes": 45 }
+      ]
+    },
+    {
+      "id": "recup_haut", "nom": "Récupération haut du corps", "quand": "Après une séance A ou B", "type": "recuperation",
+      "elements": [
+        { "exercice": "suspension_passive", "secondes": 30, "passages": 3 },
+        { "exercice": "pecs_barres", "secondes": 40, "passages": 2 },
+        { "exercice": "thread_needle", "secondes": 40, "passages": 2 },
+        { "exercice": "chat_vache", "secondes": 60 },
+        { "exercice": "figure_4", "secondes": 40 },
+        { "exercice": "mobilite_cou", "secondes": 60 }
+      ]
+    },
+    {
+      "id": "complete", "nom": "Complète", "quand": "Jour de repos", "type": "souplesse",
+      "elements": [
+        { "exercice": "chat_vache", "secondes": 60 },
+        { "exercice": "papillon", "secondes": 45, "passages": 2 },
+        { "exercice": "grenouille", "secondes": 45, "passages": 2 },
+        { "exercice": "hanches_90_90", "secondes": 45, "passages": 2 },
+        { "exercice": "pigeon", "secondes": 45 },
+        { "exercice": "couch_stretch", "secondes": 40 },
+        { "exercice": "straddle", "secondes": 45, "passages": 2 },
+        { "exercice": "ischios_sangle", "secondes": 45 },
+        { "exercice": "figure_4", "secondes": 40 },
+        { "exercice": "suspension_passive", "secondes": 30, "passages": 2 },
+        { "exercice": "pecs_barres", "secondes": 40, "passages": 2 },
+        { "exercice": "thread_needle", "secondes": 40 }
+      ]
+    }
+  ],
+
+  "tests": [
+    { "id": "straddle_cm", "nom": "Écart en straddle", "unite": "cm", "plusEstMieux": true,
+      "protocole": "Assis dos au mur, jambes tendues écartées au maximum sans douleur. Mesure la distance entre les deux talons." },
+    { "id": "doigts_orteils_cm", "nom": "Doigts-orteils assis", "unite": "cm", "plusEstMieux": true,
+      "protocole": "Assis jambes tendues serrées, penche-toi en avant bras tendus. Mesure en cm au-delà des orteils (valeur négative si tu ne les atteins pas)." }
+  ]
+}

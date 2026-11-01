@@ -8,14 +8,17 @@
 import Dexie, { type EntityTable } from 'dexie';
 import { nutritionConfig } from '../data/nutritionData';
 import { defaultHydrationSettings } from '../engine/hydration';
+import { defaultMobilitySettings } from '../engine/mobility';
 import { defaultNutritionSettings } from '../engine/nutrition';
 import type {
   BodyMetric,
   CustomFood,
+  FlexTest,
   FoodEntry,
   FoodFavorite,
   MaxTest,
   MealTemplate,
+  MobilitySession,
   Meta,
   MmaSession,
   Photo,
@@ -38,6 +41,8 @@ export class CoachDB extends Dexie {
   mealTemplates!: EntityTable<MealTemplate, 'id'>;
   foodFavorites!: EntityTable<FoodFavorite, 'key'>;
   waterEntries!: EntityTable<WaterEntry, 'id'>;
+  mobilitySessions!: EntityTable<MobilitySession, 'id'>;
+  flexTests!: EntityTable<FlexTest, 'id'>;
   sets!: EntityTable<SetLog, 'id'>;
   maxTests!: EntityTable<MaxTest, 'id'>;
   bodyMetrics!: EntityTable<BodyMetric, 'id'>;
@@ -95,6 +100,18 @@ export class CoachDB extends Dexie {
             if (!p.hydration) p.hydration = defaultHydrationSettings(nutritionConfig);
           }),
       );
+
+    // v4 — Étirements et mobilité : 2 tables ajoutées, aucune table existante modifiée.
+    this.version(4)
+      .stores({ mobilitySessions: 'id, day, startedAt, routineId', flexTests: 'id, testId, day' })
+      .upgrade((tx) =>
+        tx
+          .table('profile')
+          .toCollection()
+          .modify((p: Profile) => {
+            if (!p.mobility) p.mobility = defaultMobilitySettings();
+          }),
+      );
   }
 }
 
@@ -102,6 +119,6 @@ export const db = new CoachDB();
 
 /**
  * Version du format d'export JSON (indépendante de la version Dexie).
- * v2 : tables nutrition ajoutées. v3 : hydratation. Les sauvegardes v1 et v2 restent importables.
+ * v2 : nutrition. v3 : hydratation. v4 : mobilité. Toutes les sauvegardes antérieures restent importables.
  */
-export const BACKUP_FORMAT_VERSION = 3;
+export const BACKUP_FORMAT_VERSION = 4;

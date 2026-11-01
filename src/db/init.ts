@@ -4,6 +4,7 @@
 import { nutritionConfig } from '../data/nutritionData';
 import { programme } from '../data/programme';
 import { defaultHydrationSettings } from '../engine/hydration';
+import { defaultMobilitySettings } from '../engine/mobility';
 import { defaultNutritionSettings } from '../engine/nutrition';
 import { rollCycle } from '../engine/cycle';
 import { dayKey } from '../lib/dates';
@@ -33,6 +34,7 @@ export async function ensureInitialized(): Promise<void> {
         soundOn: true,
         nutrition: defaultNutritionSettings(nutritionConfig),
         hydration: defaultHydrationSettings(nutritionConfig),
+        mobility: defaultMobilitySettings(),
         createdAt: now,
         updatedAt: now,
       };
@@ -45,6 +47,9 @@ export async function ensureInitialized(): Promise<void> {
       }
       if (existing && !existing.hydration) {
         await db.profile.update('me', { hydration: defaultHydrationSettings(nutritionConfig), updatedAt: now });
+      }
+      if (existing && !existing.mobility) {
+        await db.profile.update('me', { mobility: defaultMobilitySettings(), updatedAt: now });
       }
     }
 

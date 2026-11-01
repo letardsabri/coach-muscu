@@ -15,6 +15,7 @@ import { buildPlan, buildTestPlan, type PlannableType } from '../../engine/plann
 import { DEFAULT_READINESS } from '../../engine/readiness';
 import { unlockAudio } from '../../lib/device';
 import { Recommendations } from '../coach/Recommendations';
+import { MobilityCard } from '../mobility/MobilityCard';
 import { NutritionCard } from '../nutrition/NutritionCard';
 import { latestBodyweight, startSession } from '../workout/workoutRepo';
 import { buildCalendar, weekStart, weeklyLoadUnits, type CalendarDay } from '../../engine/schedule';
@@ -150,6 +151,8 @@ export function Home({ onResume, onNavigate }: { onResume: () => void; onNavigat
       </section>
 
       <NutritionCard onOpen={() => onNavigate('nutrition')} />
+
+      <MobilityCard />
 
       <BackupReminder completedSessions={data.sessions.filter((s) => s.status === 'completed').length} />
 

@@ -1,5 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState, type ComponentType } from 'react';
+import { MobilityContext } from './features/mobility/MobilityContext';
 import { ensureInitialized } from './db/init';
 import { Calendar } from './features/calendar/Calendar';
 import { evaluateStartup } from './features/coach/coachRepo';
@@ -14,6 +15,7 @@ import { UpdateBanner } from './ui/UpdateBanner';
 
 // Écrans à graphiques chargés à la demande : Chart.js et la base d'aliments ne ralentissent pas l'ouverture.
 const Progress = lazy(() => import('./features/progress/Progress').then((m) => ({ default: m.Progress })));
+const MobilityOverlay = lazy(() => import('./features/mobility/MobilityOverlay').then((m) => ({ default: m.MobilityOverlay })));
 const NutritionScreen = lazy(() => import('./features/nutrition/NutritionScreen').then((m) => ({ default: m.NutritionScreen })));
 
 type MainTab = Exclude<Tab, 'body'>;
@@ -32,6 +34,9 @@ export function App() {
   const [progressView, setProgressView] = useState<ProgressView>('force');
   /** Séance mise en pause par l'utilisateur : on reste sur les onglets jusqu'à « Reprendre ». */
   const [pausedId, setPausedId] = useState<string | null>(null);
+  /** Espace Mobilité ouvert (plein écran), avec éventuellement une routine lancée directement. */
+  const [mobility, setMobility] = useState<{ routine?: string } | null>(null);
+  const launcher = useMemo(() => ({ open: (routine?: string) => setMobility({ routine }) }), []);
   const active = useLiveQuery(() => getActiveSession(), []);
 
   useEffect(() => {
@@ -46,9 +51,24 @@ export function App() {
   if (init instanceof Error) return <pre className="fatal">{init.message}</pre>;
   if (init === 'pending') return null;
 
+  // Mobilité ouverte (routine guidée comprise) : plein écran, au-dessus de tout.
+  if (mobility) {
+    return (
+      <MobilityContext.Provider value={launcher}>
+        <Suspense fallback={null}>
+          <MobilityOverlay initialRoutine={mobility.routine} onClose={() => setMobility(null)} />
+        </Suspense>
+      </MobilityContext.Provider>
+    );
+  }
+
   // Une séance en cours s'ouvre directement, y compris après fermeture de l'app.
   if (active && active.id !== pausedId) {
-    return <WorkoutScreen key={active.id} sessionId={active.id} onPause={() => setPausedId(active.id)} />;
+    return (
+      <MobilityContext.Provider value={launcher}>
+        <WorkoutScreen key={active.id} sessionId={active.id} onPause={() => setPausedId(active.id)} />
+      </MobilityContext.Provider>
+    );
   }
 
   const navigate = (t: Tab) => {
@@ -62,7 +82,7 @@ export function App() {
   };
 
   return (
-    <>
+    <MobilityContext.Provider value={launcher}>
       <UpdateBanner hidden={Boolean(active)} />
       {tab === 'home' && <Home onResume={() => setPausedId(null)} onNavigate={navigate} />}
       <Suspense fallback={<main className="screen" />}>
@@ -79,6 +99,6 @@ export function App() {
           </button>
         ))}
       </nav>
-    </>
+    </MobilityContext.Provider>
   );
 }

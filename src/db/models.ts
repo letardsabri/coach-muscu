@@ -39,6 +39,8 @@ export interface Profile {
   nutrition?: NutritionSettings;
   /** Réglages hydratation (base v3). Absent sur une base v1/v2 : la migration le complète. */
   hydration?: HydrationSettings;
+  /** Réglages mobilité (base v4). Absent sur une base v1–v3 : la migration le complète. */
+  mobility?: MobilitySettings;
   createdAt: Instant;
   updatedAt: Instant;
 }
@@ -128,6 +130,43 @@ export interface WaterEntry {
   id: string;
   day: DayKey;
   ml: number;
+  createdAt: Instant;
+}
+
+// ---------------------------------------------------------------------------
+// Étirements et mobilité (base v4)
+// ---------------------------------------------------------------------------
+
+export interface MobilitySettings {
+  /** Méthode contracter-relâcher sur les exercices qui le permettent. */
+  pnf: boolean;
+  /** Niveau de maintien : chaque niveau ajoute du temps aux positions statiques. */
+  holdLevel: number;
+  /** Ressentis « facile » consécutifs, pour monter de niveau. */
+  easyStreak: number;
+}
+
+export type MobilityFeeling = 'facile' | 'correct' | 'difficile';
+
+export interface MobilitySession {
+  id: string;
+  day: DayKey;
+  routineId: string;
+  startedAt: Instant;
+  endedAt: Instant;
+  /** Temps réellement passé (pauses exclues). */
+  durationSec: number;
+  plannedSec: number;
+  positionsDone: number;
+  positionsTotal: number;
+  feeling?: MobilityFeeling;
+}
+
+export interface FlexTest {
+  id: string;
+  testId: string;
+  day: DayKey;
+  value: number;
   createdAt: Instant;
 }
 
