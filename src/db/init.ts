@@ -3,6 +3,7 @@
  */
 import { nutritionConfig } from '../data/nutritionData';
 import { programme } from '../data/programme';
+import { defaultHydrationSettings } from '../engine/hydration';
 import { defaultNutritionSettings } from '../engine/nutrition';
 import { rollCycle } from '../engine/cycle';
 import { dayKey } from '../lib/dates';
@@ -31,6 +32,7 @@ export async function ensureInitialized(): Promise<void> {
         dumbbell: { ...programme.equipment.dumbbell },
         soundOn: true,
         nutrition: defaultNutritionSettings(nutritionConfig),
+        hydration: defaultHydrationSettings(nutritionConfig),
         createdAt: now,
         updatedAt: now,
       };
@@ -40,6 +42,9 @@ export async function ensureInitialized(): Promise<void> {
       const existing = await db.profile.get('me');
       if (existing && !existing.nutrition) {
         await db.profile.update('me', { nutrition: defaultNutritionSettings(nutritionConfig), updatedAt: now });
+      }
+      if (existing && !existing.hydration) {
+        await db.profile.update('me', { hydration: defaultHydrationSettings(nutritionConfig), updatedAt: now });
       }
     }
 

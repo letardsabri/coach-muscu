@@ -7,6 +7,7 @@
  */
 import Dexie, { type EntityTable } from 'dexie';
 import { nutritionConfig } from '../data/nutritionData';
+import { defaultHydrationSettings } from '../engine/hydration';
 import { defaultNutritionSettings } from '../engine/nutrition';
 import type {
   BodyMetric,
@@ -25,6 +26,7 @@ import type {
   ScheduleOverride,
   Session,
   SetLog,
+  WaterEntry,
 } from './models';
 
 export class CoachDB extends Dexie {
@@ -35,6 +37,7 @@ export class CoachDB extends Dexie {
   customFoods!: EntityTable<CustomFood, 'id'>;
   mealTemplates!: EntityTable<MealTemplate, 'id'>;
   foodFavorites!: EntityTable<FoodFavorite, 'key'>;
+  waterEntries!: EntityTable<WaterEntry, 'id'>;
   sets!: EntityTable<SetLog, 'id'>;
   maxTests!: EntityTable<MaxTest, 'id'>;
   bodyMetrics!: EntityTable<BodyMetric, 'id'>;
@@ -80,6 +83,18 @@ export class CoachDB extends Dexie {
             if (!p.nutrition) p.nutrition = defaultNutritionSettings(nutritionConfig);
           }),
       );
+
+    // v3 — Hydratation : 1 table ajoutée, aucune table existante modifiée.
+    this.version(3)
+      .stores({ waterEntries: 'id, day, createdAt' })
+      .upgrade((tx) =>
+        tx
+          .table('profile')
+          .toCollection()
+          .modify((p: Profile) => {
+            if (!p.hydration) p.hydration = defaultHydrationSettings(nutritionConfig);
+          }),
+      );
   }
 }
 
@@ -87,6 +102,6 @@ export const db = new CoachDB();
 
 /**
  * Version du format d'export JSON (indépendante de la version Dexie).
- * v2 : tables nutrition ajoutées. Les sauvegardes v1 restent importables.
+ * v2 : tables nutrition ajoutées. v3 : hydratation. Les sauvegardes v1 et v2 restent importables.
  */
-export const BACKUP_FORMAT_VERSION = 2;
+export const BACKUP_FORMAT_VERSION = 3;

@@ -1,13 +1,21 @@
-/** Résumé nutrition du jour sur le tableau de bord : calories restantes et protéines. */
+/** Résumé nutrition du jour sur le tableau de bord : calories restantes, protéines et eau. */
+import { liters, waterGoal } from '../../engine/hydration';
 import { dayKey } from '../../lib/dates';
+import { useWaterDay } from './HydrationCard';
+import { addWater } from './nutritionRepo';
 import { useNutritionDay } from './useNutrition';
 
 const fmt = (n: number) => n.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
 
 export function NutritionCard({ onOpen }: { onOpen: () => void }) {
-  const data = useNutritionDay(dayKey());
-  if (!data) return null;
+  const today = dayKey();
+  const data = useNutritionDay(today);
+  const water = useWaterDay(today);
+  if (!data || !water) return null;
   const { totals, targets } = data;
+  const hydration = data.profile.hydration;
+  const waterMl = water.reduce((n, e) => n + e.ml, 0);
+  const waterTarget = hydration ? waterGoal(hydration, data.sport).ml : null;
 
   return (
     <section className="card" onClick={onOpen} role="button">
@@ -37,6 +45,31 @@ export function NutritionCard({ onOpen }: { onOpen: () => void }) {
         <p className="muted" style={{ fontSize: 14 }}>
           {fmt(totals.kcal)} kcal saisies aujourd'hui. Règle tes objectifs dans l'onglet Nutrition.
         </p>
+      )}
+      {waterTarget !== null && (
+        <div className="spread">
+          <div className="macro" style={{ flex: 1 }}>
+            <div className="spread">
+              <small style={{ fontWeight: 700 }}>Eau</small>
+              <small className="num muted">
+                {liters(waterMl)} / {liters(waterTarget)}
+              </small>
+            </div>
+            <div className="bar water-bar">
+              <div style={{ width: `${Math.min(1, waterMl / waterTarget) * 100}%` }} />
+            </div>
+          </div>
+          <button
+            className="chip chip-btn chip-accent"
+            aria-label="Ajouter un verre d'eau de 250 ml"
+            onClick={(e) => {
+              e.stopPropagation(); // n'ouvre pas l'onglet Nutrition
+              void addWater(today, 250);
+            }}
+          >
+            +250 ml
+          </button>
+        </div>
       )}
     </section>
   );

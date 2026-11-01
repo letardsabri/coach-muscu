@@ -3,7 +3,7 @@
  */
 import { aliments } from '../../data/alimentsData';
 import { db } from '../../db/db';
-import type { CustomFood, DayKey, FoodEntry, FoodSource, MealId, MealTemplate, Nutrients, NutritionSettings } from '../../db/models';
+import type { CustomFood, DayKey, FoodEntry, FoodSource, HydrationSettings, MealId, MealTemplate, Nutrients, NutritionSettings } from '../../db/models';
 import { scale, tupleToNutrients, type Searchable } from '../../engine/nutrition';
 import { addDays } from '../../lib/dates';
 import { uuid } from '../../lib/id';
@@ -155,4 +155,26 @@ export async function updateNutritionSettings(patch: Partial<NutritionSettings>)
   const profile = await db.profile.get('me');
   if (!profile?.nutrition) return;
   await db.profile.update('me', { nutrition: { ...profile.nutrition, ...patch }, updatedAt: Date.now() });
+}
+
+// ---------------------------------------------------------------------------
+// Hydratation
+// ---------------------------------------------------------------------------
+
+export async function addWater(day: DayKey, ml: number): Promise<void> {
+  await db.waterEntries.add({ id: uuid(), day, ml, createdAt: Date.now() });
+}
+
+/** Annule la dernière prise d'eau du jour. Renvoie la quantité retirée (ou null s'il n'y en avait pas). */
+export async function undoLastWater(day: DayKey): Promise<number | null> {
+  const last = (await db.waterEntries.where('day').equals(day).sortBy('createdAt')).at(-1);
+  if (!last) return null;
+  await db.waterEntries.delete(last.id);
+  return last.ml;
+}
+
+export async function updateHydrationSettings(patch: Partial<HydrationSettings>): Promise<void> {
+  const profile = await db.profile.get('me');
+  if (!profile?.hydration) return;
+  await db.profile.update('me', { hydration: { ...profile.hydration, ...patch }, updatedAt: Date.now() });
 }

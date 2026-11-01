@@ -24,7 +24,7 @@ const V1_SCHEMA = {
   meta: 'key',
 };
 
-describe('migration de la base v1 → v2', () => {
+describe('migration de la base v1 → version actuelle', () => {
   it('conserve toutes les données et ajoute les tables et réglages nutrition', async () => {
     const name = 'migration-test';
     const v1 = new Dexie(name);
@@ -42,7 +42,7 @@ describe('migration de la base v1 → v2', () => {
 
     const v2 = new CoachDB(name);
     await v2.open();
-    expect(v2.verno).toBe(2);
+    expect(v2.verno).toBe(3);
     expect(await v2.sessions.count()).toBe(2);
     expect((await v2.sets.get('x'))?.reps).toBe(8);
     expect((await v2.bodyMetrics.get('m'))?.weightKg).toBe(85.4);
@@ -50,10 +50,41 @@ describe('migration de la base v1 → v2', () => {
     const profile = await v2.profile.get('me');
     expect(profile?.firstName).toBe('Test');
     expect(profile?.nutrition).toMatchObject({ sex: null, activity: 'peu_actif', deficitKcal: 400, sportBonus: true });
+    expect(profile?.hydration).toMatchObject({ baseMl: 2500, strengthBonusMl: 500 });
     expect(await v2.foodEntries.count()).toBe(0);
     await v2.foodEntries.add({ id: 'f', day: '2026-11-05', meal: 'dejeuner', source: { type: 'libre' }, nom: 'Test', kcal: 500, prot: 30, gluc: 50, lip: 15, createdAt: 1 });
     expect(await v2.foodEntries.where('[day+meal]').equals(['2026-11-05', 'dejeuner']).count()).toBe(1);
     v2.close();
+  });
+});
+
+describe('migration de la base v2 → v3', () => {
+  it('conserve séances, mesures, repas et réglages nutrition ; ajoute l’hydratation', async () => {
+    const name = 'migration-v2-test';
+    const v2 = new Dexie(name);
+    v2.version(1).stores(V1_SCHEMA);
+    v2.version(2).stores({ foodEntries: 'id, day, [day+meal], createdAt', customFoods: 'id, nom', mealTemplates: 'id', foodFavorites: 'key' });
+    await v2.open();
+    await v2.table('profile').add({ id: 'me', firstName: 'Test', nutrition: { sex: 'homme', activity: 'actif', deficitKcal: 500, proteinGPerKgGoal: 2.2, fatGPerKgMin: 0.8, sportBonus: false, manual: null } });
+    await v2.table('sessions').add({ id: 's1', day: '2026-11-02', startedAt: 1, status: 'completed', type: 'A' });
+    await v2.table('bodyMetrics').add({ id: 'm', day: '2026-11-02', weightKg: 85 });
+    await v2.table('foodEntries').add({ id: 'f', day: '2026-11-02', meal: 'diner', source: { type: 'libre' }, nom: 'Repas', kcal: 700, prot: 40, gluc: 60, lip: 20, createdAt: 1 });
+    await v2.table('customFoods').add({ id: 'c', nom: 'Wrap', categorie: 'plats', pour100g: { kcal: 200, prot: 10, gluc: 20, lip: 8 }, portions: [], createdAt: 1 });
+    v2.close();
+
+    const v3 = new CoachDB(name);
+    await v3.open();
+    expect(v3.verno).toBe(3);
+    expect(await v3.sessions.count()).toBe(1);
+    expect((await v3.bodyMetrics.get('m'))?.weightKg).toBe(85);
+    expect((await v3.foodEntries.get('f'))?.kcal).toBe(700);
+    expect((await v3.customFoods.get('c'))?.nom).toBe('Wrap');
+    const profile = await v3.profile.get('me');
+    expect(profile?.nutrition).toMatchObject({ sex: 'homme', activity: 'actif', deficitKcal: 500 }); // réglages perso intacts
+    expect(profile?.hydration).toMatchObject({ baseMl: 2500 });
+    await v3.waterEntries.add({ id: 'w', day: '2026-11-02', ml: 250, createdAt: 1 });
+    expect(await v3.waterEntries.where('day').equals('2026-11-02').count()).toBe(1);
+    v3.close();
   });
 });
 
@@ -81,7 +112,22 @@ describe('sauvegardes et nutrition', () => {
     expect((await db.profile.get('me'))?.nutrition?.activity).toBe('peu_actif');
   });
 
-  it('export v2 → import : les saisies, aliments perso, repas types et favoris sont restitués', async () => {
+  it('une sauvegarde v2 (sans hydratation) reste importable', async () => {
+    await db.delete();
+    await db.open();
+    await ensureInitialized();
+    const b = await exportBackup(false);
+    const legacy = { ...b, version: 2, data: Object.fromEntries(Object.entries(b.data).filter(([k]) => k !== 'waterEntries')) };
+    delete (legacy.data.profile as Record<string, unknown>[])[0]!.hydration;
+    const parsed = parseBackup(JSON.stringify(legacy));
+    if (!parsed.ok) throw new Error(parsed.error);
+    expect(parsed.backup.data.waterEntries).toEqual([]);
+    await importBackup(parsed.backup, 'replace');
+    await ensureInitialized();
+    expect((await db.profile.get('me'))?.hydration?.baseMl).toBe(2500);
+  });
+
+  it('export → import : les saisies, aliments perso, repas types, favoris et l’eau sont restitués', async () => {
     await db.delete();
     await db.open();
     await ensureInitialized();
@@ -89,17 +135,19 @@ describe('sauvegardes et nutrition', () => {
     await db.customFoods.add({ id: 'c', nom: 'Mon wrap', categorie: 'plats', pour100g: { kcal: 200, prot: 12, gluc: 20, lip: 8 }, portions: [{ label: '1 wrap', grams: 250 }], createdAt: 1 });
     await db.mealTemplates.add({ id: 't', nom: 'Petit-déj', items: [], createdAt: 1 });
     await db.foodFavorites.add({ key: 'base:skyr', createdAt: 1 });
+    await db.waterEntries.add({ id: 'w', day: '2026-11-05', ml: 500, createdAt: 1 });
     const text = JSON.stringify(await exportBackup(false));
 
     await db.delete();
     await db.open();
     const parsed = parseBackup(text);
     if (!parsed.ok) throw new Error(parsed.error);
-    expect(parsed.backup.version).toBe(2);
+    expect(parsed.backup.version).toBe(3);
     await importBackup(parsed.backup, 'replace');
     expect((await db.foodEntries.get('e'))?.kcal).toBe(260);
     expect((await db.customFoods.get('c'))?.nom).toBe('Mon wrap');
     expect(await db.mealTemplates.count()).toBe(1);
     expect(await db.foodFavorites.get('base:skyr')).toBeDefined();
+    expect((await db.waterEntries.get('w'))?.ml).toBe(500);
   });
 });

@@ -37,6 +37,8 @@ export interface Profile {
   soundOn: boolean;
   /** Réglages nutrition (base v2). Absent sur une base v1 : la migration le complète. */
   nutrition?: NutritionSettings;
+  /** Réglages hydratation (base v3). Absent sur une base v1/v2 : la migration le complète. */
+  hydration?: HydrationSettings;
   createdAt: Instant;
   updatedAt: Instant;
 }
@@ -107,6 +109,25 @@ export interface MealTemplate {
   id: string;
   nom: string;
   items: MealTemplateItem[];
+  createdAt: Instant;
+}
+
+// ---------------------------------------------------------------------------
+// Hydratation (base v3)
+// ---------------------------------------------------------------------------
+
+export interface HydrationSettings {
+  baseMl: number;
+  strengthBonusMl: number;
+  mmaTechniqueBonusMl: number;
+  mmaIntenseBonusMl: number;
+}
+
+/** Une prise d'eau. Une ligne par prise : permet « annuler la dernière saisie » et un historique exact. */
+export interface WaterEntry {
+  id: string;
+  day: DayKey;
+  ml: number;
   createdAt: Instant;
 }
 

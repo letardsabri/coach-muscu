@@ -10,6 +10,7 @@ import { addDays, dayKey, diffDays, parseDay } from '../../lib/dates';
 import { Segmented, Sheet } from '../../ui/components';
 import { AddFoodSheet, EditEntrySheet } from './AddFoodSheet';
 import { GoalsSheet } from './GoalsSheet';
+import { HydrationCard } from './HydrationCard';
 import { copyEntries, previousDay, saveMealTemplate } from './nutritionRepo';
 import { useNutritionDay } from './useNutrition';
 import { db } from '../../db/db';
@@ -79,6 +80,8 @@ function DayView({ day, setDay }: { day: DayKey; setDay: (d: DayKey) => void }) 
       </div>
 
       <SummaryCard totals={totals} targets={targets} onGoals={() => setGoals(true)} sportNote={sportNote(data.sport)} />
+
+      {data.profile.hydration && <HydrationCard day={day} sport={data.sport} settings={data.profile.hydration} />}
 
       {entries.length === 0 && (yesterdayCount ?? 0) > 0 && (
         <button

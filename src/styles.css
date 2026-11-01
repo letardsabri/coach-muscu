@@ -1660,3 +1660,53 @@ p {
   background: var(--accent-soft);
   outline: 1.5px solid var(--accent);
 }
+
+/* ------------------------------------------------------------------ */
+/* Hydratation                                                         */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --water: #3987e5;
+  --water-soft: rgba(57, 135, 229, 0.16);
+}
+
+.water-card {
+  gap: 10px;
+}
+
+.water-bar > div {
+  background: var(--water);
+}
+
+.water-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.water-buttons button {
+  min-height: 60px;
+  border-radius: 16px;
+  background: var(--water-soft);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.15;
+}
+
+.water-buttons button b {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.water-buttons button small {
+  font-size: 12px;
+  color: var(--text-2);
+  font-weight: 600;
+}
+
+.water-buttons button:active {
+  background: var(--water);
+}

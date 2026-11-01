@@ -21,6 +21,14 @@ const nutritionSchema = z.object({
   sportBonusKcal: z.object({ strength: nonNeg, mma_technique: nonNeg, mma_intense: nonNeg }),
   limits: z.object({ maxDeficitPct: z.number().min(0).max(50), minKcal: z.number().positive(), deficitChoices: z.array(nonNeg) }),
   quickGrams: z.array(z.number().positive()),
+  hydration: z.object({
+    baseMl: z.number().min(500).max(6000),
+    strengthBonusMl: nonNeg,
+    mmaTechniqueBonusMl: nonNeg,
+    mmaIntenseBonusMl: nonNeg,
+    quickMl: z.array(z.number().positive()).min(1),
+    customStepMl: z.number().positive(),
+  }),
 });
 
 export type NutritionConfig = z.infer<typeof nutritionSchema>;

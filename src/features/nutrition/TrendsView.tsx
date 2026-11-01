@@ -6,6 +6,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { useState } from 'react';
 import { db } from '../../db/db';
 import { rollingAverage } from '../../engine/body';
+import { liters, waterByDay, waterGoal } from '../../engine/hydration';
 import { averageOfLoggedDays, totalsByDay } from '../../engine/nutrition';
 import { weekStart } from '../../engine/schedule';
 import { addDays, dayKey, diffDays } from '../../lib/dates';
@@ -23,11 +24,17 @@ export function TrendsView() {
   const from = addDays(today, -(period - 1));
   const entries = useLiveQuery(() => db.foodEntries.where('day').between(addDays(today, -59), today, true, true).toArray(), [today]);
   const data = useHistory();
+  const water = useLiveQuery(() => db.waterEntries.where('day').between(addDays(today, -59), today, true, true).toArray(), [today]);
   const rest = useNutritionDay(today);
-  if (!entries || !data || !rest) return null;
+  if (!entries || !data || !rest || !water) return null;
+  const days = Array.from({ length: period }, (_, i) => addDays(from, i));
+  const waterTotals = waterByDay(water);
+  const waterValues = days.map((d) => (waterTotals.has(d) ? Math.round((waterTotals.get(d)! / 1000) * 100) / 100 : null));
+  const waterLogged = days.filter((d) => waterTotals.has(d));
+  const waterAvg = waterLogged.length ? waterLogged.reduce((n, d) => n + waterTotals.get(d)!, 0) / waterLogged.length : null;
+  const waterTarget = rest.profile.hydration ? waterGoal(rest.profile.hydration, { strength: false, mma: null }).ml : null;
 
   const totals = totalsByDay(entries);
-  const days = Array.from({ length: period }, (_, i) => addDays(from, i));
   const labels = days.map(shortDate);
   const kcal = days.map((d) => totals.get(d)?.kcal ?? null);
   const prot = days.map((d) => totals.get(d)?.prot ?? null);
@@ -42,7 +49,8 @@ export function TrendsView() {
   const weeks = [0, 1, 2, 3].map((w) => {
     const start = addDays(weekStart(today), -7 * w);
     const ds = [...Array(7).keys()].map((k) => addDays(start, k)).filter((d) => diffDays(today, d) >= 0 && totals.has(d));
-    return { start, n: ds.length, avg: averageOfLoggedDays(ds.map((d) => totals.get(d)!)) };
+    const wd = [...Array(7).keys()].map((k) => addDays(start, k)).filter((d) => diffDays(today, d) >= 0 && waterTotals.has(d));
+    return { start, n: ds.length, avg: averageOfLoggedDays(ds.map((d) => totals.get(d)!)), water: wd.length ? wd.reduce((n, d) => n + waterTotals.get(d)!, 0) / wd.length : null };
   });
 
   return (
@@ -56,9 +64,18 @@ export function TrendsView() {
           { value: 30, label: '30 jours' },
         ]}
       />
+      <section className="card">
+        <div className="spread">
+          <h3 className="card-h">Eau</h3>
+          <span className="num muted">{waterAvg !== null ? `moy. ${liters(waterAvg)}` : 'aucune saisie'}</span>
+        </div>
+        {waterLogged.length > 0 && (
+          <LineChart labels={labels} values={waterValues} unit="L" decimals={2} seriesLabel="Eau" height={150} reference={waterTarget ? { value: waterTarget / 1000, label: 'Objectif (repos)' } : undefined} />
+        )}
+      </section>
       {logged.length === 0 ? (
         <div className="card">
-          <p className="muted">Aucune saisie sur cette période : tes courbes apparaîtront après quelques jours de suivi.</p>
+          <p className="muted">Aucun repas saisi sur cette période : les courbes de calories apparaîtront après quelques jours de suivi.</p>
         </div>
       ) : (
         <>
@@ -93,7 +110,7 @@ export function TrendsView() {
           {weeks.map((w) => (
             <div key={w.start}>
               <span>Sem. du {shortDate(w.start)}</span>
-              <span className="num muted">{w.avg ? `${fmt(w.avg.kcal)} kcal · ${fmt(w.avg.prot)} g prot. · ${w.n} j` : '—'}</span>
+              <span className="num muted">{[w.avg ? `${fmt(w.avg.kcal)} kcal · ${fmt(w.avg.prot)} g prot.` : null, w.water !== null ? `${liters(w.water)} d’eau` : null].filter(Boolean).join(' · ') || '—'}</span>
             </div>
           ))}
         </div>
