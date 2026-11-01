@@ -1,7 +1,9 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { lazy, Suspense, useEffect, useMemo, useState, type ComponentType } from 'react';
 import { MobilityContext } from './features/mobility/MobilityContext';
+import { db } from './db/db';
 import { ensureInitialized } from './db/init';
+import { setSoundPrefs } from './lib/device';
 import { Calendar } from './features/calendar/Calendar';
 import { evaluateStartup } from './features/coach/coachRepo';
 import { Home } from './features/dashboard/Home';
@@ -38,6 +40,10 @@ export function App() {
   const [mobility, setMobility] = useState<{ routine?: string } | null>(null);
   const launcher = useMemo(() => ({ open: (routine?: string) => setMobility({ routine }) }), []);
   const active = useLiveQuery(() => getActiveSession(), []);
+  const soundProfile = useLiveQuery(() => db.profile.get('me'), []);
+  useEffect(() => {
+    if (soundProfile) setSoundPrefs({ volume: soundProfile.soundVolume ?? 0.8, mode: soundProfile.soundMode ?? 'mix' });
+  }, [soundProfile]);
 
   useEffect(() => {
     ensureInitialized()

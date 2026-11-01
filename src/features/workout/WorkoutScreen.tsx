@@ -282,7 +282,13 @@ function ExerciseView(props: {
     <>
       <div className="workout-body">
         {props.resting && <RestCard session={session} now={props.now} />}
-        {props.goVisible && !props.resting && <div className="card go flash">C'est reparti !</div>}
+        {!props.resting && session.restEndsAt !== undefined && (
+          // Repos écoulé (y compris pendant que l'app était fermée) : temps calculé sur l'horodatage.
+          <div className={`card go${props.goVisible ? ' flash' : ''}`} role="status">
+            C'est reparti !
+            <small className="num overtime">Repos terminé depuis {formatOvertime((props.now - session.restEndsAt) / 1000)}</small>
+          </div>
+        )}
         {props.pendingFeeling >= 0 && <FeelingCard session={session} index={props.pendingFeeling} />}
 
         <section className="ex-head">
@@ -449,6 +455,14 @@ function HoldTimer({ onStop }: { onStop: (sec: number) => void }) {
       Lancer le chrono de maintien
     </button>
   );
+}
+
+/** « 12 s », « 1 min 05 », « 12 min ». */
+export function formatOvertime(sec: number): string {
+  const s = Math.max(0, Math.floor(sec));
+  if (s < 60) return `${s} s`;
+  const m = Math.floor(s / 60);
+  return m >= 10 ? `${m} min` : `${m} min ${String(s % 60).padStart(2, '0')}`;
 }
 
 function RestCard({ session, now }: { session: Session; now: number }) {

@@ -10,6 +10,7 @@ import { programme } from '../../data/programme';
 import { db } from '../../db/db';
 import type { IsoWeekday, Profile } from '../../db/models';
 import { dayKey } from '../../lib/dates';
+import { audioSessionSupported, playRestEnd, setSoundPrefs, unlockAudio } from '../../lib/device';
 import { Segmented, Stepper, Toggle } from '../../ui/components';
 
 const WEEKDAYS: { day: IsoWeekday; label: string }[] = [
@@ -141,12 +142,67 @@ export function Settings({ initialPage = 'main' }: { initialPage?: Page }) {
             onChange={(on) => void db.programState.update('current', { loadFrozen: on, updatedAt: Date.now() })}
           />
         )}
-        <Toggle label="Son de fin de repos" checked={profile.soundOn} onChange={(on) => void update({ soundOn: on })} />
+        <Toggle label="Son des alertes" hint="Fin de repos, changements en mode guidé" checked={profile.soundOn} onChange={(on) => void update({ soundOn: on })} />
+        {profile.soundOn && <SoundSettings profile={profile} update={update} />}
       </section>
 
       <p className="faint" style={{ fontSize: 13, textAlign: 'center' }}>
         Programme v{programme.version} · {programme.updatedAt}
       </p>
     </main>
+  );
+}
+
+function SoundSettings({ profile, update }: { profile: Profile; update: (p: Partial<Profile>) => Promise<number> }) {
+  const volume = profile.soundVolume ?? 0.8;
+  const mode = profile.soundMode ?? 'mix';
+  return (
+    <div className="sound-settings">
+      <label className="field">
+        <span>Volume de l'alerte : {Math.round(volume * 100)} %</span>
+        <input
+          type="range"
+          min={0.1}
+          max={1}
+          step={0.05}
+          value={volume}
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            setSoundPrefs({ volume: v });
+            void update({ soundVolume: v });
+          }}
+        />
+      </label>
+      <div className="field">
+        <span>Avec ta musique</span>
+        <Segmented
+          ariaLabel="Mode du son"
+          value={mode}
+          onChange={(m) => {
+            setSoundPrefs({ mode: m });
+            void update({ soundMode: m });
+          }}
+          options={[
+            { value: 'mix', label: 'Baisse la musique', hint: 'conseillé' },
+            { value: 'loud', label: 'Toujours audible', hint: 'coupe la musique' },
+          ]}
+        />
+      </div>
+      <p className="faint" style={{ fontSize: 13 }}>
+        {mode === 'mix'
+          ? 'La musique baisse le temps du bip puis reprend. Le bouton silencieux de l’iPhone coupe l’alerte.'
+          : 'L’alerte sonne même en mode silencieux, mais iOS arrête alors ta musique.'}
+        {!audioSessionSupported() && ' (Réglage sans effet sur ce navigateur : iOS 16.4 ou plus récent requis.)'}
+      </p>
+      <button
+        className="btn-secondary"
+        onClick={() => {
+          unlockAudio();
+          window.setTimeout(playRestEnd, 150);
+        }}
+      >
+        Tester le son
+      </button>
+    </div>
   );
 }

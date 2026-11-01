@@ -1805,3 +1805,24 @@ p {
 .ex-info p.muted {
   color: var(--text-2);
 }
+
+.go .overtime {
+  display: block;
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.sound-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0 12px;
+}
+
+.sound-settings input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent);
+  min-height: 32px;
+}

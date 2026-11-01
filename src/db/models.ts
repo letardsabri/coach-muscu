@@ -35,6 +35,10 @@ export interface Profile {
   mmaMode: boolean;
   dumbbell: { minKg: number; maxKg: number; stepKg: number };
   soundOn: boolean;
+  /** Volume des alertes, 0,05–1 (défaut 0,8). */
+  soundVolume?: number;
+  /** « mix » : baisse brièvement la musique (défaut) ; « loud » : toujours audible, coupe la musique. */
+  soundMode?: 'mix' | 'loud';
   /** Réglages nutrition (base v2). Absent sur une base v1 : la migration le complète. */
   nutrition?: NutritionSettings;
   /** Réglages hydratation (base v3). Absent sur une base v1/v2 : la migration le complète. */
