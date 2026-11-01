@@ -20,7 +20,7 @@ const Progress = lazy(() => import('./features/progress/Progress').then((m) => (
 const MobilityOverlay = lazy(() => import('./features/mobility/MobilityOverlay').then((m) => ({ default: m.MobilityOverlay })));
 const NutritionScreen = lazy(() => import('./features/nutrition/NutritionScreen').then((m) => ({ default: m.NutritionScreen })));
 
-type MainTab = Exclude<Tab, 'body'>;
+type MainTab = Exclude<Tab, 'body' | 'review'>;
 
 const TABS: { id: MainTab; label: string; icon: ComponentType }[] = [
   { id: 'home', label: 'Accueil', icon: IconHome },
@@ -78,8 +78,8 @@ export function App() {
   }
 
   const navigate = (t: Tab) => {
-    if (t === 'body') {
-      setProgressView('corps');
+    if (t === 'body' || t === 'review') {
+      setProgressView(t === 'body' ? 'corps' : 'bilan');
       setTab('progress');
     } else {
       if (t === 'progress') setProgressView('force');

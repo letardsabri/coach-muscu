@@ -17,9 +17,10 @@ import { Body } from '../body/Body';
 import { evaluatePhaseNow } from '../coach/coachRepo';
 import { PhaseCriteria } from '../coach/PhaseCriteria';
 import { deleteSession, latestBodyweight } from '../workout/workoutRepo';
+import { ReviewView } from './ReviewView';
 import { exerciseHistory, GROUP_ORDER, groupBy, shortDate, weeklyVolume } from './stats';
 
-export type ProgressView = 'force' | 'volume' | 'tests' | 'history' | 'corps';
+export type ProgressView = 'bilan' | 'force' | 'volume' | 'tests' | 'history' | 'corps';
 type View = ProgressView;
 
 const TRACKED = [
@@ -53,6 +54,7 @@ export function Progress({ initialView = 'force' }: { initialView?: View }) {
         value={view}
         onChange={setView}
         options={[
+          { value: 'bilan', label: 'Bilan' },
           { value: 'force', label: 'Force' },
           { value: 'volume', label: 'Volume' },
           { value: 'tests', label: 'Max' },
@@ -61,6 +63,7 @@ export function Progress({ initialView = 'force' }: { initialView?: View }) {
         ]}
       />
       {view === 'corps' && <Body embedded />}
+      {view === 'bilan' && <ReviewView />}
       {(view === 'force' || view === 'volume') && completed.length === 0 && (
         <div className="card">
           <p className="muted">Termine une première séance : tes courbes apparaîtront ici.</p>
