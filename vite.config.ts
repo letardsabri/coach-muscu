@@ -33,6 +33,8 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,json}'],
         navigateFallback: 'index.html',
+        // Réception des notifications de fin de repos (public/push-sw.js).
+        importScripts: ['push-sw.js'],
       },
     }),
   ],

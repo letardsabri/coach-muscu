@@ -3,7 +3,8 @@
  * Sous-pages : rappels et sauvegarde.
  */
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { disablePush, enablePush, pushState, type PushState } from '../../lib/push';
 import { RemindersPanel } from '../reminders/RemindersPanel';
 import { BackupPanel } from './BackupPanel';
 import { programme } from '../../data/programme';
@@ -144,6 +145,7 @@ export function Settings({ initialPage = 'main' }: { initialPage?: Page }) {
         )}
         <Toggle label="Son des alertes" hint="Fin de repos, changements en mode guidé" checked={profile.soundOn} onChange={(on) => void update({ soundOn: on })} />
         {profile.soundOn && <SoundSettings profile={profile} update={update} />}
+        <PushSettings />
       </section>
 
       <p className="faint" style={{ fontSize: 13, textAlign: 'center' }}>
@@ -203,6 +205,52 @@ function SoundSettings({ profile, update }: { profile: Profile; update: (p: Part
       >
         Tester le son
       </button>
+    </div>
+  );
+}
+
+const PUSH_TEXT: Record<PushState, string> = {
+  on: 'Activée : si tu quittes l’app pendant un repos, une notification arrive à la fin du repos.',
+  off: 'Une notification arrive à la fin du repos quand tu as quitté l’app (écran verrouillé compris).',
+  denied: 'Notifications refusées : réactive-les dans Réglages iPhone → Notifications → Coach.',
+  'not-installed': 'Disponible uniquement dans l’app installée sur l’écran d’accueil (iOS 16.4 ou plus récent).',
+  unsupported: 'Ce navigateur ne gère pas les notifications push.',
+  'not-configured': 'Serveur de notifications pas encore en ligne.',
+};
+
+function PushSettings() {
+  const [state, setState] = useState<PushState | null>(null);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    void pushState().then(setState);
+  }, []);
+  if (!state) return null;
+  return (
+    <div className="sound-settings">
+      <Toggle
+        label="Notification de fin de repos"
+        hint={PUSH_TEXT[state]}
+        checked={state === 'on'}
+        onChange={async (on) => {
+          if (busy || (state !== 'on' && state !== 'off')) return;
+          setBusy(true);
+          try {
+            if (on) setState(await enablePush());
+            else {
+              await disablePush();
+              setState(await pushState());
+            }
+          } finally {
+            setBusy(false);
+          }
+        }}
+      />
+      {state === 'on' && (
+        <p className="faint" style={{ fontSize: 13 }}>
+          Envoyée par ton serveur Cloudflare gratuit. Données transmises : un identifiant technique anonyme et l’heure de fin du repos.
+          Sans réseau, pas de notification (le chrono de l’app reste juste).
+        </p>
+      )}
     </div>
   );
 }

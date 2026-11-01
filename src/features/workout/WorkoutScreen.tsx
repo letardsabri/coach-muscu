@@ -15,6 +15,7 @@ import type { PlannedExercise, Profile, Session, SetLog } from '../../db/models'
 import { buildSequence, nextStep, stepAfter, stepKey, type Step } from '../../engine/sequence';
 import { formatClock } from '../../lib/dates';
 import { playRestEnd, unlockAudio, useNow, useWakeLock } from '../../lib/device';
+import { cancelRestPush, scheduleRestPush } from '../../lib/push';
 import { Sheet, Stepper } from '../../ui/components';
 import { FEELINGS, formatLoad, formatRange, kg, unitLabel } from '../../ui/format';
 import {
@@ -60,6 +61,18 @@ export function WorkoutScreen({ sessionId, onPause }: { sessionId: string; onPau
       setGoUntil(now + 4000);
     }
   }, [now, restEndsAt, profile?.soundOn]);
+
+  // Notification « Repos terminé » si l'app est quittée pendant un repos (programmée en partant,
+  // annulée au retour : dans l'app, c'est le chrono et le son qui prennent le relais).
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        if (restEndsAt !== undefined && restEndsAt - Date.now() > 3000) void scheduleRestPush(restEndsAt);
+      } else void cancelRestPush();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [restEndsAt]);
 
   useEffect(() => {
     if (!toast) return;

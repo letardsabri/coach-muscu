@@ -434,6 +434,6 @@ export interface Reminder {
 }
 
 export interface Meta {
-  key: 'schema' | 'lastBackupAt' | 'programmeVersion' | 'installedAt';
+  key: 'schema' | 'lastBackupAt' | 'programmeVersion' | 'installedAt' | 'pushSubscription' | 'pushDeviceId';
   value: string | number;
 }

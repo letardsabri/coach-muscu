@@ -1,0 +1,5 @@
+{
+  "_doc": "Notifications de fin de repos (serveur Cloudflare, voir push-worker/). La clé publique VAPID n'est pas secrète.",
+  "workerUrl": "https://coach-push.letardsabri.workers.dev",
+  "vapidPublicKey": "BK91W4Fa7UdCmOngxLPHEBOrMNW7CgsoRAICYVm-LvLn33_Mdl0ybu1x3lUaJ7V-jTLRRS4zPRme_FjtdwHYCmI"
+}

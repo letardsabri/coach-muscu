@@ -1,0 +1,19 @@
+# Serveur de notifications « fin de repos » (Cloudflare Workers, offre gratuite).
+# Déploiement : npx wrangler deploy   ·   Clé privée : npx wrangler secret put VAPID_PRIVATE_JWK
+name = "coach-push"
+main = "src/index.ts"
+compatibility_date = "2025-06-01"
+
+[vars]
+VAPID_PUBLIC_KEY = "BK91W4Fa7UdCmOngxLPHEBOrMNW7CgsoRAICYVm-LvLn33_Mdl0ybu1x3lUaJ7V-jTLRRS4zPRme_FjtdwHYCmI"
+VAPID_SUBJECT = "https://letardsabri.github.io/coach-muscu/"
+ALLOWED_ORIGINS = "https://letardsabri.github.io,http://localhost:5174"
+
+[[durable_objects.bindings]]
+name = "TIMERS"
+class_name = "RestTimer"
+
+# Durable Object stocké en SQLite : disponible sur l'offre gratuite.
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RestTimer"]
