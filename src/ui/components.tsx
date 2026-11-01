@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 export function Stepper(props: {
   label: string;
@@ -81,6 +81,42 @@ export function Toggle(props: { label: string; hint?: string; checked: boolean; 
         {props.hint && <small>{props.hint}</small>}
       </span>
       <input type="checkbox" role="switch" checked={props.checked} onChange={(e) => props.onChange(e.target.checked)} />
+    </label>
+  );
+}
+
+/**
+ * Champ numérique adapté à l'iPhone : clavier décimal, virgule acceptée.
+ * `value` null = vide (ex. objectif automatique).
+ */
+export function NumberField(props: {
+  label: string;
+  value: number | null;
+  onChange: (v: number | null) => void;
+  unit?: string;
+  placeholder?: string;
+  autoFocus?: boolean;
+}) {
+  const [text, setText] = useState(props.value === null ? '' : String(props.value).replace('.', ','));
+  return (
+    <label className="field num-field">
+      <span>{props.label}</span>
+      <span className="num-field-row">
+        <input
+          type="text"
+          inputMode="decimal"
+          autoFocus={props.autoFocus}
+          placeholder={props.placeholder}
+          value={text}
+          onChange={(e) => {
+            const t = e.target.value.replace(/[^0-9.,]/g, '');
+            setText(t);
+            const n = parseFloat(t.replace(',', '.'));
+            props.onChange(t === '' || Number.isNaN(n) ? null : n);
+          }}
+        />
+        {props.unit && <small>{props.unit}</small>}
+      </span>
     </label>
   );
 }

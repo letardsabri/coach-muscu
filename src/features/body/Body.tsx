@@ -25,13 +25,14 @@ const MEASURES: { key: MeasureKey; label: string }[] = [
   { key: 'hipsCm', label: 'Hanches' },
 ];
 
-export function Body() {
+/** `embedded` : affiché comme sous-onglet de Progrès (sans en-tête ni conteneur d'écran). */
+export function Body({ embedded = false }: { embedded?: boolean }) {
   const profile = useProfile();
   const data = useHistory();
   const [entry, setEntry] = useState<'weight' | 'measures' | null>(null);
   const [measure, setMeasure] = useState<MeasureKey>('waistCm');
 
-  if (!profile || !data) return <main className="screen" />;
+  if (!profile || !data) return embedded ? null : <main className="screen" />;
 
   const weights = weightPoints(data.metrics);
   const avg = rollingAverage(weights).slice(-90);
@@ -40,9 +41,8 @@ export function Body() {
   const waistTarget = Math.round(profile.heightCm * programme.body.waistToHeightMax * 10) / 10;
   const latestWaist = metricPoints(data.metrics, (m) => m.waistCm).at(-1);
 
-  return (
-    <main className="screen">
-      <h1 className="screen-title">Corps</h1>
+  const content = (
+    <>
 
       <div className="inputs">
         <button className="btn-primary" onClick={() => setEntry('weight')}>
@@ -111,6 +111,13 @@ export function Body() {
       <MetricHistory metrics={data.metrics} />
 
       {entry && <EntrySheet mode={entry} profile={profile} metrics={data.metrics} onClose={() => setEntry(null)} />}
+    </>
+  );
+  if (embedded) return content;
+  return (
+    <main className="screen">
+      <h1 className="screen-title">Corps</h1>
+      {content}
     </main>
   );
 }

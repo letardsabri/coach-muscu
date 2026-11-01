@@ -24,4 +24,5 @@ export function useProgramState() {
   return useLiveQuery(() => db.programState.get('current'), []);
 }
 
-export type Tab = 'home' | 'progress' | 'calendar' | 'body' | 'settings';
+/** « body » ouvre Progrès sur le sous-onglet Corps (Corps n'est plus un onglet principal). */
+export type Tab = 'home' | 'nutrition' | 'progress' | 'calendar' | 'body' | 'settings';

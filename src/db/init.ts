@@ -1,7 +1,9 @@
 /**
  * Initialisation au premier lancement et entretien à chaque ouverture.
  */
+import { nutritionConfig } from '../data/nutritionData';
 import { programme } from '../data/programme';
+import { defaultNutritionSettings } from '../engine/nutrition';
 import { rollCycle } from '../engine/cycle';
 import { dayKey } from '../lib/dates';
 import { uuid } from '../lib/id';
@@ -28,10 +30,17 @@ export async function ensureInitialized(): Promise<void> {
         mmaMode: false,
         dumbbell: { ...programme.equipment.dumbbell },
         soundOn: true,
+        nutrition: defaultNutritionSettings(nutritionConfig),
         createdAt: now,
         updatedAt: now,
       };
       await db.profile.add(profile);
+    } else {
+      // Profil venant d'une sauvegarde v1 restaurée : réglages nutrition par défaut.
+      const existing = await db.profile.get('me');
+      if (existing && !existing.nutrition) {
+        await db.profile.update('me', { nutrition: defaultNutritionSettings(nutritionConfig), updatedAt: now });
+      }
     }
 
     const state = await db.programState.get('current');

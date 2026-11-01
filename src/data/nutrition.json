@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "_doc": "Paramètres du suivi nutritionnel. Modifiables sans toucher au code ; vérifiés au démarrage et par les tests.",
+
+  "meals": [
+    { "id": "petit_dejeuner", "label": "Petit-déjeuner" },
+    { "id": "dejeuner", "label": "Déjeuner" },
+    { "id": "diner", "label": "Dîner" },
+    { "id": "collation", "label": "Collation" }
+  ],
+
+  "activityLevels": [
+    { "id": "sedentaire", "label": "Sédentaire", "hint": "Assis la plupart du temps, peu de marche", "factor": 1.2 },
+    { "id": "peu_actif", "label": "Peu actif", "hint": "Études ou bureau, un peu de marche", "factor": 1.3 },
+    { "id": "actif", "label": "Actif", "hint": "Souvent debout, beaucoup de marche", "factor": 1.45 },
+    { "id": "tres_actif", "label": "Très actif", "hint": "Métier physique", "factor": 1.6 }
+  ],
+
+  "defaults": {
+    "activity": "peu_actif",
+    "deficitKcal": 400,
+    "proteinGPerKgGoal": 2.0,
+    "fatGPerKgMin": 0.8,
+    "sportBonus": true
+  },
+
+  "_sportBonusKcal": "Dépense ajoutée les jours d'entraînement (séance de ~30 min, MMA ~1 h 15). Le déficit reste le même.",
+  "sportBonusKcal": { "strength": 200, "mma_technique": 350, "mma_intense": 500 },
+
+  "limits": {
+    "maxDeficitPct": 25,
+    "minKcal": 1500,
+    "deficitChoices": [0, 250, 400, 500, 600]
+  },
+
+  "quickGrams": [50, 100, 150, 200, 250, 300]
+}

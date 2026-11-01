@@ -66,7 +66,8 @@ function baseOptions(unit: string, decimals: number): ChartOptions<'line' | 'bar
 
 export function LineChart(props: {
   labels: string[];
-  values: number[];
+  /** null = pas de donnée ce jour-là (la ligne relie les points voisins). */
+  values: (number | null)[];
   unit?: string;
   decimals?: number;
   reference?: { value: number; label: string };
@@ -80,13 +81,14 @@ export function LineChart(props: {
       borderColor: ACCENT,
       backgroundColor: 'rgba(255,90,31,0.10)',
       borderWidth: 2,
-      pointRadius: props.values.length > 40 ? 0 : 4,
+      pointRadius: props.values.length > 40 ? 0 : 3,
       pointHoverRadius: 6,
       pointBackgroundColor: ACCENT,
       pointBorderColor: '#161618',
       pointBorderWidth: 2,
       tension: 0.25,
       fill: true,
+      spanGaps: true,
     },
   ];
   if (props.reference) {
@@ -103,6 +105,7 @@ export function LineChart(props: {
       pointBorderWidth: 0,
       tension: 0,
       fill: false,
+      spanGaps: true,
       borderDash: [5, 5],
     } as (typeof datasets)[number]);
   }

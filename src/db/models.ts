@@ -35,8 +35,85 @@ export interface Profile {
   mmaMode: boolean;
   dumbbell: { minKg: number; maxKg: number; stepKg: number };
   soundOn: boolean;
+  /** Réglages nutrition (base v2). Absent sur une base v1 : la migration le complète. */
+  nutrition?: NutritionSettings;
   createdAt: Instant;
   updatedAt: Instant;
+}
+
+// ---------------------------------------------------------------------------
+// Nutrition (base v2)
+// ---------------------------------------------------------------------------
+
+export type MealId = 'petit_dejeuner' | 'dejeuner' | 'diner' | 'collation';
+
+export interface Nutrients {
+  kcal: number;
+  prot: number;
+  gluc: number;
+  lip: number;
+}
+
+export interface NutritionSettings {
+  /** Requis par la formule de Mifflin-St Jeor ; null tant que non renseigné (jamais supposé). */
+  sex: 'homme' | 'femme' | null;
+  activity: string;
+  deficitKcal: number;
+  proteinGPerKgGoal: number;
+  fatGPerKgMin: number;
+  /** Objectif majoré les jours de séance / MMA. */
+  sportBonus: boolean;
+  /** Objectifs fixés à la main : chaque valeur renseignée remplace le calcul. */
+  manual: Partial<Nutrients> | null;
+}
+
+/** Origine d'une saisie : aliment de la base, aliment perso, saisie libre, ou repas type. */
+export type FoodSource =
+  | { type: 'base'; id: string }
+  | { type: 'perso'; id: string }
+  | { type: 'libre' }
+  | { type: 'repas'; id: string };
+
+/** Saisie alimentaire. Les valeurs nutritionnelles sont figées à la saisie : l'historique ne bouge pas. */
+export interface FoodEntry extends Nutrients {
+  id: string;
+  day: DayKey;
+  meal: MealId;
+  source: FoodSource;
+  nom: string;
+  grams?: number;
+  portion?: { label: string; grams: number; count: number };
+  createdAt: Instant;
+}
+
+export interface CustomFood {
+  id: string;
+  nom: string;
+  categorie: string;
+  pour100g: Nutrients;
+  portions: { label: string; grams: number }[];
+  archived?: boolean;
+  createdAt: Instant;
+}
+
+export interface MealTemplateItem extends Nutrients {
+  source: FoodSource;
+  nom: string;
+  grams?: number;
+  portion?: { label: string; grams: number; count: number };
+}
+
+export interface MealTemplate {
+  id: string;
+  nom: string;
+  items: MealTemplateItem[];
+  createdAt: Instant;
+}
+
+export interface FoodFavorite {
+  /** « base:poulet_blanc » ou « perso:<uuid> ». */
+  key: string;
+  createdAt: Instant;
 }
 
 /** Position personnelle sur l'échelle d'un exercice. */

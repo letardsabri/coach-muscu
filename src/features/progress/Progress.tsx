@@ -13,12 +13,14 @@ import { BarChart, Delta, LineChart } from '../../ui/charts';
 import { Segmented, Sheet, Stepper } from '../../ui/components';
 import { formatLoad, SESSION_LABELS } from '../../ui/format';
 import { useHistory, useProfile } from '../data';
+import { Body } from '../body/Body';
 import { evaluatePhaseNow } from '../coach/coachRepo';
 import { PhaseCriteria } from '../coach/PhaseCriteria';
 import { deleteSession, latestBodyweight } from '../workout/workoutRepo';
 import { exerciseHistory, GROUP_ORDER, groupBy, shortDate, weeklyVolume } from './stats';
 
-type View = 'force' | 'volume' | 'tests' | 'history';
+export type ProgressView = 'force' | 'volume' | 'tests' | 'history' | 'corps';
+type View = ProgressView;
 
 const TRACKED = [
   'pullup_pronation',
@@ -33,10 +35,10 @@ const TRACKED = [
   'side_plank',
 ];
 
-export function Progress() {
+export function Progress({ initialView = 'force' }: { initialView?: View }) {
   const profile = useProfile();
   const data = useHistory();
-  const [view, setView] = useState<View>('force');
+  const [view, setView] = useState<View>(initialView);
 
   if (!profile || !data) return <main className="screen" />;
   const completed = data.sessions.filter((s) => s.status === 'completed');
@@ -55,8 +57,10 @@ export function Progress() {
           { value: 'volume', label: 'Volume' },
           { value: 'tests', label: 'Max' },
           { value: 'history', label: 'Séances' },
+          { value: 'corps', label: 'Corps' },
         ]}
       />
+      {view === 'corps' && <Body embedded />}
       {(view === 'force' || view === 'volume') && completed.length === 0 && (
         <div className="card">
           <p className="muted">Termine une première séance : tes courbes apparaîtront ici.</p>

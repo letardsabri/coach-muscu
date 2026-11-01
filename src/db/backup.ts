@@ -25,6 +25,11 @@ const TABLES = [
   'recommendations',
   'reminders',
   'meta',
+  // v2 — nutrition (absentes des sauvegardes v1 : importées comme vides)
+  'foodEntries',
+  'customFoods',
+  'mealTemplates',
+  'foodFavorites',
 ] as const;
 type TableName = (typeof TABLES)[number];
 
@@ -48,6 +53,10 @@ const backupSchema = z.object({
     recommendations: z.array(row('id')),
     reminders: z.array(row('id')),
     meta: z.array(row('key')),
+    foodEntries: z.array(row('id')).default([]),
+    customFoods: z.array(row('id')).default([]),
+    mealTemplates: z.array(row('id')).default([]),
+    foodFavorites: z.array(row('key')).default([]),
     photos: z
       .array(z.object({ id: z.string(), day: z.string(), angle: z.string(), createdAt: z.number(), dataUrl: z.string() }))
       .optional(),
@@ -99,6 +108,7 @@ export function summarize(b: Backup) {
   return {
     sessions: b.data.sessions.length,
     sets: b.data.sets.length,
+    foodEntries: b.data.foodEntries.length,
     bodyMetrics: b.data.bodyMetrics.length,
     maxTests: b.data.maxTests.length,
     photos: b.data.photos?.length ?? 0,

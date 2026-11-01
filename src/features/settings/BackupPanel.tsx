@@ -90,7 +90,7 @@ export function BackupPanel() {
           <>
             <p className="muted" style={{ fontSize: 14 }}>
               Sauvegarde du {new Date(summary.exportedAt).toLocaleDateString('fr-FR')} : {summary.sessions} séances, {summary.sets} séries,{' '}
-              {summary.bodyMetrics} mesures, {summary.maxTests} tests{summary.photos ? `, ${summary.photos} photos` : ''}.
+              {summary.bodyMetrics} mesures, {summary.maxTests} tests, {summary.foodEntries} saisies alimentaires{summary.photos ? `, ${summary.photos} photos` : ''}.
             </p>
             <div className="inputs">
               <button className="btn-secondary" disabled={busy} onClick={() => void doImport('merge')}>
