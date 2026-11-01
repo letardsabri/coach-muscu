@@ -1,11 +1,11 @@
-import { mobilite } from '../../data/mobiliteData';
 import { programme } from '../../data/programme';
+import { souplesse } from '../../data/souplesseData';
 import { recommendedRoutines } from '../../engine/mobility';
 import { buildCalendar, weekStart } from '../../engine/schedule';
 import { addDays, dayKey } from '../../lib/dates';
 import { useHistory, useProfile, useProgramState } from '../data';
 
-/** Routines recommandées par jour pour la semaine contenant `day` (calendrier, accueil). */
+/** Séances de souplesse recommandées par jour pour la semaine contenant `day` (calendrier, accueil). */
 export function useMobilityWeek(day: string = dayKey()) {
   const profile = useProfile();
   const state = useProgramState();
@@ -25,7 +25,8 @@ export function useMobilityWeek(day: string = dayKey()) {
     today,
     trackingSince: dayKey(new Date(profile.createdAt)),
   });
-  return recommendedRoutines(week, data.mma, mobilite);
+  return recommendedRoutines(week, data.mma, souplesse);
 }
 
-export const routineName = (id: string) => mobilite.routines.find((r) => r.id === id)?.nom ?? id;
+/** Nom d'une séance, y compris celles de l'ancien module mobilité (historique). */
+export const routineName = (id: string) => souplesse.seances.find((s) => s.id === id)?.nom ?? souplesse.anciennesRoutines[id] ?? id;

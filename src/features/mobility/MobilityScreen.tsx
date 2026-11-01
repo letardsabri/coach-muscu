@@ -1,31 +1,31 @@
 /**
- * Espace Mobilité : routines, suivi de la semaine, réglages, bibliothèque d'exercices, tests de souplesse.
+ * Espace Souplesse (MMA / Muay Thaï) : séances, suivi de la semaine, niveau, bibliothèque d'exercices, tests mensuels.
  */
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useState } from 'react';
-import { mobilite } from '../../data/mobiliteData';
+import { souplesse } from '../../data/souplesseData';
 import { db } from '../../db/db';
 import type { Profile } from '../../db/models';
-import { buildTimeline, regularityStreak, resolveExercise, weekStats } from '../../engine/mobility';
+import { buildTimeline, defaultMobilitySettings, levelSummary, regularityStreak, resolveExercise, weekStats, type StretchReco } from '../../engine/mobility';
 import { weekStart } from '../../engine/schedule';
 import { dayKey } from '../../lib/dates';
 import { LineChart } from '../../ui/charts';
-import { NumberField, Sheet, Toggle } from '../../ui/components';
+import { NumberField, Sheet } from '../../ui/components';
 import { shortDate } from '../progress/stats';
-import { addFlexTest, deleteFlexTest, updateMobilitySettings } from './mobilityRepo';
+import { addFlexTest, deleteFlexTest } from './mobilityRepo';
 
-export function MobilityScreen(props: { profile: Profile; recommended?: string; onStart: (routineId: string) => void; onClose: () => void }) {
+export function MobilityScreen(props: { profile: Profile; recommended?: StretchReco; onStart: (routineId: string) => void; onClose: () => void }) {
   const sessions = useLiveQuery(() => db.mobilitySessions.toArray(), []);
   const [openZone, setOpenZone] = useState<string | null>(null);
   const [testing, setTesting] = useState<string | null>(null);
   if (!sessions) return null;
 
-  const settings = props.profile.mobility ?? { pnf: false, holdLevel: 0, easyStreak: 0 };
+  const settings = props.profile.mobility ?? defaultMobilitySettings();
   const monday = weekStart(dayKey());
   const week = weekStats(sessions, monday);
-  const { min, max } = mobilite.settings.weeklyTarget;
+  const { min, max } = souplesse.settings.weeklyTarget;
   const streak = regularityStreak(sessions, monday, min);
-  const holdNow = 30 + settings.holdLevel * mobilite.settings.levelStepSec;
+  const level = levelSummary(settings, souplesse);
 
   return (
     <div className="overlay-screen">
@@ -33,7 +33,11 @@ export function MobilityScreen(props: { profile: Profile; recommended?: string; 
         <button className="btn-ghost" style={{ alignSelf: 'flex-start', padding: 0 }} onClick={props.onClose}>
           ‹ Retour
         </button>
-        <h1 className="screen-title">Mobilité</h1>
+        <h1 className="screen-title">Souplesse</h1>
+        <p className="muted" style={{ fontSize: 14, marginTop: -8 }}>
+          Kicks hauts, teeps, garde au sol, sprawl, grappling. Séances à part entière, jamais juste avant la muscu ou le MMA : un jour sans
+          entraînement, ou le soir.
+        </p>
 
         <section className="card">
           <div className="spread">
@@ -61,16 +65,19 @@ export function MobilityScreen(props: { profile: Profile; recommended?: string; 
           </p>
         </section>
 
-        {mobilite.routines.map((r) => {
-          const t = buildTimeline(r, mobilite, { ankleMode: props.profile.ankleMode, settings });
-          const isReco = props.recommended === r.id;
+        {souplesse.seances.map((r) => {
+          const t = buildTimeline(r, souplesse, { ankleMode: props.profile.ankleMode, settings });
+          const isReco = props.recommended?.seance === r.id;
           return (
             <section key={r.id} className={`card${isReco ? ' card-accent' : ''}`}>
               <div className="spread">
                 <div>
-                  {isReco && <p className="eyebrow" style={{ color: 'var(--accent)' }}>Recommandée aujourd'hui</p>}
+                  {isReco && (
+                    <p className="eyebrow" style={{ color: 'var(--accent)' }}>
+                      Recommandée aujourd'hui{props.recommended?.evening ? ' · le soir' : ''}
+                    </p>
+                  )}
                   <h3 className="card-h">{r.nom}</h3>
-                  <small className="muted">{r.quand}</small>
                 </div>
                 <span className="chip num">{Math.round(t.totalSec / 60)} min</span>
               </div>
@@ -78,7 +85,9 @@ export function MobilityScreen(props: { profile: Profile; recommended?: string; 
                 {[...new Set(t.steps.map((s) => s.exercise.nom))].join(' · ')}
               </p>
               {t.replaced.length > 0 && <p style={{ fontSize: 13, color: 'var(--warn)' }}>Mode cheville : {t.replaced.length} exercice(s) adapté(s).</p>}
-              {r.type === 'echauffement' && <p className="faint" style={{ fontSize: 13 }}>Mouvements actifs uniquement : idéal juste avant une séance ou un MMA.</p>}
+              {isReco && props.recommended?.evening && (
+                <p className="faint" style={{ fontSize: 13 }}>Jour de muscu : fais-la le soir, à distance de la séance.</p>
+              )}
               <button className={isReco ? 'btn-primary' : 'btn-secondary'} onClick={() => props.onStart(r.id)}>
                 Lancer
               </button>
@@ -86,24 +95,27 @@ export function MobilityScreen(props: { profile: Profile; recommended?: string; 
           );
         })}
 
-        <section className="card" style={{ gap: 4 }}>
-          <h3 className="card-h">Réglages</h3>
-          <Toggle
-            label="Méthode PNF (contracter-relâcher)"
-            hint="Écart assis et ischios : étirer 20 s, contracter 6 s, relâcher et aller plus loin 20 s"
-            checked={settings.pnf}
-            onChange={(v) => void updateMobilitySettings({ pnf: v })}
-          />
+        <section className="card" style={{ gap: 6 }}>
+          <div className="spread">
+            <h3 className="card-h">Progression</h3>
+            <span className="chip num">
+              niveau {level.level}/{level.maxLevel}
+            </span>
+          </div>
           <p className="muted" style={{ fontSize: 14 }}>
-            Temps de maintien actuel : <b>{holdNow} s</b> pour une position de base de 30 s (niveau {settings.holdLevel}/{mobilite.settings.maxLevel}). Il
-            augmente après 2 ressentis « facile » de suite, et diminue après un « difficile ».
+            Maintiens <b className="num">{level.holdSec} s</b> · répétitions <b className="num">+{level.extraReps}</b> · haltère{' '}
+            <b className="num">{level.loadKg} kg</b> sur les étirements chargés (le Jefferson curl monte plus lentement).
+          </p>
+          <p className="faint" style={{ fontSize: 13 }}>
+            Le niveau monte après 2 ressentis « facile » de suite et descend après un « difficile ». PNF : contracte 6 s, relâche et gagne de
+            l'amplitude 25 s, 3 cycles.
           </p>
         </section>
 
         <section className="card" style={{ padding: '14px 18px' }}>
           <h3 className="card-h">Exercices</h3>
-          {mobilite.zones.map((z) => {
-            const list = mobilite.exercices.filter((e) => e.zone === z.id);
+            {souplesse.zones.map((z) => {
+            const list = souplesse.exercices.filter((e) => e.zone === z.id);
             const open = openZone === z.id;
             return (
               <div key={z.id} className="zone">
@@ -115,12 +127,14 @@ export function MobilityScreen(props: { profile: Profile; recommended?: string; 
                 </button>
                 {open &&
                   list.map((e) => {
-                    const used = resolveExercise(e.id, mobilite, props.profile.ankleMode);
+                    const used = resolveExercise(e.id, souplesse, props.profile.ankleMode);
                     return (
                       <article key={e.id} className="ex-info">
                         <b>
                           {e.nom}
-                          {e.cheville === 'forte' && <span className="chip chip-warn" style={{ marginLeft: 6 }}>attention cheville</span>}
+                          {e.alerte && <span className="chip chip-warn" style={{ marginLeft: 6 }}>{e.alerte}</span>}
+                          {e.pnf && <span className="chip" style={{ marginLeft: 6 }}>PNF</span>}
+                          {e.charge && <span className="chip" style={{ marginLeft: 6 }}>haltère</span>}
                         </b>
                         <p>{e.description}</p>
                         <p>
@@ -151,8 +165,9 @@ function FlexTests({ onAdd }: { onAdd: (id: string) => void }) {
   if (!tests) return null;
   return (
     <>
-      {mobilite.tests.map((def) => {
+      {souplesse.tests.map((def) => {
         const list = tests.filter((t) => t.testId === def.id);
+        if (def.archive && list.length === 0) return null;
         const last = list[list.length - 1];
         const first = list[0];
         return (
@@ -173,12 +188,16 @@ function FlexTests({ onAdd }: { onAdd: (id: string) => void }) {
               </p>
             )}
             <p className="faint" style={{ fontSize: 13 }}>
-              {def.protocole} Test mensuel, optionnel.
+              {def.protocole} {def.archive ? '' : 'Test mensuel, optionnel.'}
             </p>
             <div className="spread">
-              <button className="btn-secondary" style={{ width: 'auto', padding: '0 16px' }} onClick={() => onAdd(def.id)}>
-                Nouveau test
-              </button>
+              {!def.archive ? (
+                <button className="btn-secondary" style={{ width: 'auto', padding: '0 16px' }} onClick={() => onAdd(def.id)}>
+                  Nouveau test
+                </button>
+              ) : (
+                <span />
+              )}
               {last && (
                 <button
                   className="btn-ghost btn-danger"
@@ -198,23 +217,19 @@ function FlexTests({ onAdd }: { onAdd: (id: string) => void }) {
 }
 
 function FlexTestSheet({ testId, onClose }: { testId: string; onClose: () => void }) {
-  const def = mobilite.tests.find((t) => t.id === testId)!;
+  const def = souplesse.tests.find((t) => t.id === testId)!;
   const [value, setValue] = useState<number | null>(null);
-  const [negative, setNegative] = useState(false);
   return (
     <Sheet title={def.nom} onClose={onClose}>
       <p className="muted" style={{ fontSize: 14 }}>
         {def.protocole}
       </p>
       <NumberField label="Mesure" value={value} onChange={setValue} unit={def.unite} autoFocus />
-      {testId === 'doigts_orteils_cm' && (
-        <Toggle label="Je n'atteins pas mes orteils" hint="La mesure est alors comptée en négatif" checked={negative} onChange={setNegative} />
-      )}
       <button
         className="btn-primary"
         disabled={value === null}
         onClick={async () => {
-          await addFlexTest(testId, negative ? -Math.abs(value ?? 0) : (value ?? 0));
+          await addFlexTest(testId, value ?? 0);
           onClose();
         }}
       >

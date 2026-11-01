@@ -13,7 +13,6 @@ import { weekStart } from '../../engine/schedule';
 import { addDays, dayKey } from '../../lib/dates';
 import { unlockAudio } from '../../lib/device';
 import { Scale, Segmented, Sheet, Stepper, Toggle } from '../../ui/components';
-import { useMobility } from '../mobility/MobilityContext';
 import { ADJUSTMENT_LABELS, formatDose } from '../../ui/format';
 import { lastCompletedSession, lastExposures, latestBodyweight, startSession } from './workoutRepo';
 
@@ -25,7 +24,6 @@ interface Loaded {
 }
 
 export function StartSheet(props: { initialType: PlannableType; suggestedType: 'A' | 'B'; onClose: () => void }) {
-  const { open } = useMobility();
   const profile = useLiveQuery(() => db.profile.get('me'), []);
   const state = useLiveQuery(() => db.programState.get('current'), []);
   const [type, setType] = useState<PlannableType>(props.initialType);
@@ -89,9 +87,6 @@ export function StartSheet(props: { initialType: PlannableType; suggestedType: '
 
   return (
     <Sheet title="Forme du jour" onClose={props.onClose}>
-      <button className="btn-ghost warmup-link" onClick={() => open('express')}>
-        Échauffement : Mobilité express (5 min) ›
-      </button>
       <Segmented
         ariaLabel="Type de séance"
         value={type}

@@ -1,7 +1,7 @@
 /**
- * Accès base de la mobilité : séances guidées, réglages (PNF, niveau de maintien), tests de souplesse.
+ * Accès base de la souplesse : séances guidées, niveau de progression, tests de souplesse.
  */
-import { mobilite } from '../../data/mobiliteData';
+import { souplesse } from '../../data/souplesseData';
 import { db } from '../../db/db';
 import type { MobilityFeeling, MobilitySession, MobilitySettings } from '../../db/models';
 import { defaultMobilitySettings, nextSettings } from '../../engine/mobility';
@@ -9,7 +9,7 @@ import { dayKey } from '../../lib/dates';
 import { uuid } from '../../lib/id';
 
 /**
- * Enregistre une séance. Avec un ressenti, met à jour la progression du temps de maintien
+ * Enregistre une séance. Avec un ressenti, met à jour la progression (maintiens, répétitions, charge)
  * et renvoie le changement de niveau (+1 / −1 / 0).
  */
 export async function saveMobilitySession(s: Omit<MobilitySession, 'id' | 'day' | 'feeling'>, feeling?: MobilityFeeling): Promise<-1 | 0 | 1> {
@@ -19,7 +19,7 @@ export async function saveMobilitySession(s: Omit<MobilitySession, 'id' | 'day' 
     if (!feeling) return;
     const profile = await db.profile.get('me');
     const current = profile?.mobility ?? defaultMobilitySettings();
-    const next = nextSettings(current, feeling, mobilite);
+    const next = nextSettings(current, feeling, souplesse);
     change = next.change;
     await db.profile.update('me', { mobility: next.settings, updatedAt: Date.now() });
   });

@@ -36,7 +36,7 @@ export function App() {
   const [progressView, setProgressView] = useState<ProgressView>('force');
   /** Séance mise en pause par l'utilisateur : on reste sur les onglets jusqu'à « Reprendre ». */
   const [pausedId, setPausedId] = useState<string | null>(null);
-  /** Espace Mobilité ouvert (plein écran), avec éventuellement une routine lancée directement. */
+  /** Espace Souplesse ouvert (plein écran), avec éventuellement une séance lancée directement. */
   const [mobility, setMobility] = useState<{ routine?: string } | null>(null);
   const launcher = useMemo(() => ({ open: (routine?: string) => setMobility({ routine }) }), []);
   const active = useLiveQuery(() => getActiveSession(), []);
@@ -57,7 +57,7 @@ export function App() {
   if (init instanceof Error) return <pre className="fatal">{init.message}</pre>;
   if (init === 'pending') return null;
 
-  // Mobilité ouverte (routine guidée comprise) : plein écran, au-dessus de tout.
+  // Souplesse ouverte (séance guidée comprise) : plein écran, au-dessus de tout.
   if (mobility) {
     return (
       <MobilityContext.Provider value={launcher}>

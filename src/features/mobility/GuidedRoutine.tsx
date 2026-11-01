@@ -1,22 +1,24 @@
 /**
- * Mode étirement guidé : minuteur par position, passage automatique, gauche / droite, PNF, son.
+ * Séance de souplesse guidée : minuteur par exercice (temps, répétitions au tempo ou cycles PNF),
+ * passage automatique, gauche / droite, son à chaque changement.
  *
  * Le temps est calculé à partir d'horodatages (début, pauses), jamais par un compteur : après un
- * verrouillage d'écran, la position affichée est la bonne. « Passer » et « Revenir » décalent ce temps.
+ * verrouillage d'écran, l'étape affichée est la bonne. « Passer », « Revenir » et « Fini » décalent ce temps.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { mobilite, type Routine } from '../../data/mobiliteData';
+import { souplesse, type Seance } from '../../data/souplesseData';
 import type { MobilityFeeling, Profile } from '../../db/models';
-import { buildTimeline, positionAt, positionsReached, startOfStep, type TimelineStep } from '../../engine/mobility';
+import { buildTimeline, currentRep, defaultMobilitySettings, positionAt, positionsReached, startOfStep, type TimelineStep } from '../../engine/mobility';
 import { formatClock } from '../../lib/dates';
 import { playTick, unlockAudio, useNow, useWakeLock } from '../../lib/device';
 import { saveMobilitySession } from './mobilityRepo';
 
 const PHASE_COLORS: Record<string, string> = { contract: 'var(--warn)', relax: 'var(--ok)' };
+const blocLabel = (id: string) => souplesse.blocs.find((b) => b.id === id)?.label ?? id;
 
-export function GuidedRoutine({ routine, profile, onExit }: { routine: Routine; profile: Profile; onExit: () => void }) {
-  const settings = profile.mobility ?? { pnf: false, holdLevel: 0, easyStreak: 0 };
-  const timeline = useMemo(() => buildTimeline(routine, mobilite, { ankleMode: profile.ankleMode, settings }), [routine, profile.ankleMode, settings]);
+export function GuidedRoutine({ routine, profile, onExit }: { routine: Seance; profile: Profile; onExit: () => void }) {
+  const settings = profile.mobility ?? defaultMobilitySettings();
+  const timeline = useMemo(() => buildTimeline(routine, souplesse, { ankleMode: profile.ankleMode, settings }), [routine, profile.ankleMode, settings]);
   const [startedAt] = useState(() => Date.now());
   const [pausedAt, setPausedAt] = useState<number | null>(null);
   const [pausedMs, setPausedMs] = useState(0);
@@ -31,21 +33,21 @@ export function GuidedRoutine({ routine, profile, onExit }: { routine: Routine; 
     : Math.max(0, (now - startedAt - pausedMs - (pausedAt !== null ? now - pausedAt : 0)) / 1000 + shiftSec);
   const pos = positionAt(timeline, elapsed);
 
-  // Fin de routine, et bip à chaque changement d'étape.
+  // Fin de séance, et bip à chaque changement d'étape.
   useEffect(() => {
     if (done) return;
     if (!pos) {
       if (profile.soundOn) playTick(true);
-      // Temps réellement passé (pauses exclues) : « passer » des positions ne gonfle pas le suivi.
+      // Temps réellement passé (pauses exclues) : « passer » des exercices ne gonfle pas le suivi.
       const endedAt = Date.now();
       setDone({ elapsed: timeline.totalSec, endedAt, realSec: Math.round((endedAt - startedAt - pausedMs) / 1000) });
       return;
     }
     if (pos.index !== lastIndex.current) {
-      if (lastIndex.current !== -1 && profile.soundOn) playTick(false);
+      if (lastIndex.current !== -1 && profile.soundOn) playTick(timeline.steps[pos.index]!.phase === 'contract');
       lastIndex.current = pos.index;
     }
-  }, [pos, done, timeline.totalSec, profile.soundOn, startedAt, pausedMs]);
+  }, [pos, done, timeline, profile.soundOn, startedAt, pausedMs]);
 
   const jump = (index: number) => {
     const target = startOfStep(timeline, Math.max(0, Math.min(index, timeline.steps.length)));
@@ -54,7 +56,7 @@ export function GuidedRoutine({ routine, profile, onExit }: { routine: Routine; 
 
   const stopEarly = async () => {
     const realSec = Math.round(Math.min((Date.now() - startedAt - pausedMs - (pausedAt !== null ? Date.now() - pausedAt : 0)) / 1000, timeline.totalSec));
-    if (realSec >= 60 && window.confirm('Arrêter la routine ? Le temps déjà fait sera enregistré.')) {
+    if (realSec >= 60 && window.confirm('Arrêter la séance ? Le temps déjà fait sera enregistré.')) {
       await saveMobilitySession({
         routineId: routine.id,
         startedAt,
@@ -65,7 +67,7 @@ export function GuidedRoutine({ routine, profile, onExit }: { routine: Routine; 
         positionsTotal: timeline.positions,
       });
       onExit();
-    } else if (realSec < 60 && window.confirm('Arrêter la routine ? (moins d’une minute : rien ne sera enregistré)')) {
+    } else if (realSec < 60 && window.confirm('Arrêter la séance ? (moins d’une minute : rien ne sera enregistré)')) {
       onExit();
     }
   };
@@ -89,6 +91,9 @@ export function GuidedRoutine({ routine, profile, onExit }: { routine: Routine; 
   const next = timeline.steps.slice(pos.index + 1).find((s) => s.kind === 'work' && s.exercise.id !== step.exercise.id);
   const progress = elapsed / timeline.totalSec;
   const paused = pausedAt !== null;
+  const rep = step.phase === 'reps' ? currentRep(step, pos.remaining) : 0;
+  // Fin de l'exercice en cours (côté compris) : « Fini » saute toutes ses étapes restantes.
+  const endOfPosition = timeline.steps.findIndex((s, i) => i >= pos.index && s.last) + 1;
 
   return (
     <div className="workout guided">
@@ -109,23 +114,45 @@ export function GuidedRoutine({ routine, profile, onExit }: { routine: Routine; 
       </div>
 
       <div className="workout-body guided-body">
+        <p className="faint" style={{ textAlign: 'center', fontSize: 13, margin: 0 }}>
+          {blocLabel(step.bloc)}
+        </p>
         <p className="eyebrow" style={{ color: step.kind === 'prep' ? 'var(--text-2)' : PHASE_COLORS[step.phase ?? ''] ?? 'var(--accent)' }}>
           {step.label}
+          {step.cycle ? ` · cycle ${step.cycle}/${step.cycles}` : ''}
         </p>
-        <div className={`guided-timer num${step.kind === 'prep' ? ' prep' : ''}`} role="timer">
-          {Math.ceil(pos.remaining)}
-        </div>
+        {step.phase === 'reps' ? (
+          <div className="guided-timer num" role="timer" aria-label={`Répétition ${rep} sur ${step.reps}`}>
+            {rep}
+            <span className="guided-of">/{step.reps}</span>
+          </div>
+        ) : (
+          <div className={`guided-timer num${step.kind === 'prep' ? ' prep' : ''}`} role="timer">
+            {Math.ceil(pos.remaining)}
+          </div>
+        )}
+        {step.phase === 'reps' && (
+          <p className="muted num" style={{ textAlign: 'center', margin: 0 }}>
+            {step.tempo} s par répétition · encore {Math.ceil(pos.remaining)} s
+          </p>
+        )}
         <section className="ex-head" style={{ textAlign: 'center' }}>
           <h1>{step.exercise.nom}</h1>
           <p className="variant">
             {sideLabel(step)}
             {step.sets > 1 ? ` · passage ${step.set}/${step.sets}` : ''}
+            {step.loadKg ? ` · haltère ${step.loadKg} kg` : ''}
           </p>
+          {step.exercise.alerte && <span className="chip chip-warn">{step.exercise.alerte}</span>}
         </section>
         <div className="card guided-cues">
-          <p>
-            <b>Consigne :</b> {step.exercise.consigne}
-          </p>
+          {step.phase === 'contract' && step.exercise.pnf ? (
+            <p style={{ color: 'var(--warn)', fontWeight: 600 }}>{step.exercise.pnf}</p>
+          ) : (
+            <p>
+              <b>Consigne :</b> {step.exercise.consigne}
+            </p>
+          )}
           <p className="muted">
             <b>À éviter :</b> {step.exercise.erreur}
           </p>
@@ -134,16 +161,21 @@ export function GuidedRoutine({ routine, profile, onExit }: { routine: Routine; 
         </div>
         {next && <p className="faint" style={{ textAlign: 'center' }}>Ensuite : {next.exercise.nom}</p>}
         <p className="faint" style={{ textAlign: 'center', fontSize: 13 }}>
-          Étirement modéré, jamais de douleur.
+          Étirement intense, jamais de douleur articulaire.
         </p>
       </div>
 
       <div className="workout-actions guided-actions">
+        {step.phase === 'reps' && (
+          <button className="btn-primary guided-done" onClick={() => jump(endOfPosition)}>
+            Fini ✓
+          </button>
+        )}
         <button className="btn-secondary" aria-label="Étape précédente" onClick={() => jump(pos.index - 1)}>
           ‹
         </button>
         <button
-          className="btn-primary"
+          className={`guided-pause ${step.phase === 'reps' ? 'btn-secondary' : 'btn-primary'}`}
           onClick={() => {
             unlockAudio();
             if (paused) {
@@ -163,11 +195,12 @@ export function GuidedRoutine({ routine, profile, onExit }: { routine: Routine; 
 }
 
 function sideLabel(step: TimelineStep): string {
-  if (!step.side) return step.exercise.type === 'dynamique' ? 'Mouvement continu' : 'Position';
-  return step.side === 'gauche' ? 'Côté gauche' : 'Côté droit';
+  if (step.side) return step.side === 'gauche' ? 'Côté gauche' : 'Côté droit';
+  if (step.phase === 'reps') return 'Mouvement lent';
+  return step.bloc === 'preparation' ? 'Mouvement continu' : 'Position';
 }
 
-function FinishView(props: { routine: Routine; timelineSec: number; realSec: number; positions: number; startedAt: number; endedAt: number; onExit: () => void }) {
+function FinishView(props: { routine: Seance; timelineSec: number; realSec: number; positions: number; startedAt: number; endedAt: number; onExit: () => void }) {
   const [message, setMessage] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
@@ -187,9 +220,9 @@ function FinishView(props: { routine: Routine; timelineSec: number; realSec: num
     setSaved(true);
     setMessage(
       change === 1
-        ? 'Bien joué : les positions tenues passent à +15 s la prochaine fois.'
+        ? 'Bien joué : niveau supérieur la prochaine fois (maintiens +15 s, +1 répétition, charge ajustée).'
         : change === -1
-          ? 'Noté : les temps de maintien redescendent d’un cran.'
+          ? 'Noté : on redescend d’un niveau la prochaine fois.'
           : 'Séance enregistrée.',
     );
   };
@@ -206,7 +239,7 @@ function FinishView(props: { routine: Routine; timelineSec: number; realSec: num
           </div>
           <div>
             <span className="big-number num">{props.positions}</span>
-            <small>positions</small>
+            <small>exercices</small>
           </div>
           <div>
             <span className="big-number num">{props.realSec >= props.timelineSec * 0.5 ? '✓' : '—'}</span>
@@ -217,7 +250,7 @@ function FinishView(props: { routine: Routine; timelineSec: number; realSec: num
           <section className="card">
             <h3 className="card-h">Ressenti</h3>
             <p className="muted" style={{ fontSize: 14 }}>
-              Sert à ajuster le temps de maintien des prochaines séances.
+              Sert à ajuster les prochaines séances : temps de maintien, répétitions et charge.
             </p>
             <div className="feelings" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
               {(['facile', 'correct', 'difficile'] as MobilityFeeling[]).map((f) => (

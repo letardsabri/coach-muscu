@@ -1,6 +1,6 @@
-/** Espace Mobilité plein écran : liste des routines, ou routine guidée lancée directement. */
+/** Espace Souplesse plein écran : liste des séances, ou séance guidée lancée directement. */
 import { useState } from 'react';
-import { mobilite } from '../../data/mobiliteData';
+import { souplesse } from '../../data/souplesseData';
 import { dayKey } from '../../lib/dates';
 import { useProfile } from '../data';
 import { GuidedRoutine } from './GuidedRoutine';
@@ -13,14 +13,14 @@ export function MobilityOverlay({ initialRoutine, onClose }: { initialRoutine?: 
   const [running, setRunning] = useState<string | undefined>(initialRoutine);
   if (!profile) return null;
 
-  const routine = running ? mobilite.routines.find((r) => r.id === running) : undefined;
+  const routine = running ? souplesse.seances.find((r) => r.id === running) : undefined;
   if (routine) {
     return (
       <div className="overlay-screen">
         <GuidedRoutine
           routine={routine}
           profile={profile}
-          // Lancée depuis un raccourci : on revient d'où l'on vient ; sinon à la liste des routines.
+          // Lancée depuis un raccourci : on revient d'où l'on vient ; sinon à la liste des séances.
           onExit={() => (initialRoutine ? onClose() : setRunning(undefined))}
         />
       </div>

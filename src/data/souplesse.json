@@ -1,0 +1,299 @@
+{
+  "version": 1,
+  "_format": "Souplesse MMA / Muay Thaï. Chaque élément de séance a un mode : « temps » (maintien en secondes ; « progressif » = suit le niveau 45 → 60 → 75 → 90 s), « reps » (répétitions × tempo en secondes par répétition ; + repsParNiveau par niveau) ou « pnf » (cycles contracter / relâcher). Durées par côté et par passage. cheville : aucune | faible (note affichée) | forte (remplacé en mode cheville par « remplacement »). chargesKg : charge proposée par niveau (0 à 3) pour les étirements chargés.",
+
+  "settings": {
+    "prepSec": 5,
+    "hold": { "baseSec": 45, "stepSec": 15, "maxSec": 90 },
+    "maxLevel": 3,
+    "easyToLevelUp": 2,
+    "repsParNiveau": 1,
+    "chargesKg": [4, 4, 6, 8],
+    "pnf": { "cycles": 3, "settleSec": 15, "contractSec": 6, "relaxSec": 25 },
+    "weeklyTarget": { "min": 3, "max": 4 }
+  },
+
+  "zones": [
+    { "id": "preparation", "label": "Préparation articulaire" },
+    { "id": "adducteurs", "label": "Adducteurs / écart" },
+    { "id": "hanches", "label": "Hanches / rotateurs" },
+    { "id": "kicks", "label": "Fléchisseurs de hanche / kicks" },
+    { "id": "dos", "label": "Dos / thoracique / grappling" }
+  ],
+
+  "blocs": [
+    { "id": "preparation", "label": "Préparation" },
+    { "id": "developpement", "label": "Développement" },
+    { "id": "renforcement", "label": "Renforcement en amplitude" }
+  ],
+
+  "exercices": [
+    {
+      "id": "chat_vache", "nom": "Chat-vache segmentaire", "zone": "dos", "cotes": false,
+      "description": "À quatre pattes, enroule le dos vertèbre par vertèbre en partant du bassin, puis déroule en creusant à partir de la nuque.",
+      "consigne": "Lent, une vertèbre après l'autre, synchronisé avec la respiration.",
+      "erreur": "Bouger tout le dos d'un bloc ou seulement la nuque.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "essuie_glaces", "nom": "Essuie-glaces allongé", "zone": "preparation", "cotes": false,
+      "description": "Sur le dos, pieds au sol plus larges que les hanches, laisse tomber les deux genoux d'un côté puis de l'autre.",
+      "consigne": "Épaules au sol, amplitude qui grandit à chaque passage.",
+      "erreur": "Forcer en fin de mouvement dès le début.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "hip_cars", "nom": "Hip CARs à quatre pattes", "zone": "hanches", "cotes": true,
+      "description": "À quatre pattes, lève un genou sur le côté, emmène-le vers l'arrière puis ramène-le sous toi : le plus grand cercle possible.",
+      "consigne": "Le reste du corps ne bouge pas, seule la hanche tourne. Lent et contrôlé.",
+      "erreur": "Tourner le bassin ou creuser le dos pour faire un plus grand cercle.",
+      "cheville": "aucune"
+    },
+
+    {
+      "id": "grenouille", "nom": "Grenouille (frog)", "zone": "adducteurs", "cotes": false, "pnf": "Pousse les genoux contre le sol, comme pour les rapprocher.",
+      "description": "À quatre pattes, écarte les genoux au maximum, chevilles alignées avec les genoux, puis recule le bassin vers les talons.",
+      "consigne": "Genoux, chevilles et hanches sur la même ligne, dos plat.",
+      "erreur": "Laisser les pieds se rapprocher : l'étirement part des adducteurs.",
+      "cheville": "faible", "noteCheville": "Coussin sous les genoux, pieds relâchés sur le côté : aucune charge sur la cheville. Arrête si elle tire."
+    },
+    {
+      "id": "frog_rocks", "nom": "Frog rocks", "zone": "adducteurs", "cotes": false,
+      "description": "En position de grenouille, avance et recule le bassin lentement entre les mains et les talons.",
+      "consigne": "Recule un peu plus loin à chaque répétition, dos plat.",
+      "erreur": "Aller vite et rebondir en fin d'amplitude.",
+      "cheville": "faible", "noteCheville": "Même installation que la grenouille : coussin sous les genoux, pieds relâchés."
+    },
+    {
+      "id": "pancake", "nom": "Pancake assis (straddle)", "zone": "adducteurs", "cotes": false, "pnf": "Appuie les talons et l'arrière des jambes contre le sol.",
+      "description": "Assis, jambes tendues écartées au maximum, bascule le bassin vers l'avant et descends le buste, dos long.",
+      "consigne": "Le mouvement vient du bassin, pas du dos. Genoux et orteils vers le plafond.",
+      "erreur": "Arrondir le dos pour descendre plus bas.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "pancake_charge", "nom": "Pancake chargé (haltère)", "zone": "adducteurs", "cotes": false, "charge": true,
+      "description": "En pancake, haltère tenu des deux mains devant toi : descends lentement le buste puis remonte.",
+      "consigne": "Le poids aide à descendre, il ne tire pas : contrôle chaque descente.",
+      "erreur": "Laisser l'haltère tomber en fin de mouvement.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "papillon", "nom": "Papillon", "zone": "adducteurs", "cotes": false, "pnf": "Pousse les genoux vers le haut contre tes mains.",
+      "description": "Assis, plantes des pieds jointes, talons proches du bassin, mains sur les genoux.",
+      "consigne": "Dos long, laisse les genoux descendre sans rebond.",
+      "erreur": "Appuyer fort sur les genoux en rebondissant.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "cossack", "nom": "Cossack squat lent", "zone": "adducteurs", "cotes": true, "alerte": "attention cheville",
+      "description": "Debout jambes très écartées, descends sur une jambe pendant que l'autre reste tendue, orteils vers le plafond.",
+      "consigne": "Descente en 3 s, talon de la jambe pliée au sol, buste droit.",
+      "erreur": "Décoller le talon ou laisser le genou rentrer.",
+      "cheville": "forte", "remplacement": "straddle_mur",
+      "noteCheville": "Flexion forcée de la cheville en charge : remplacé en mode cheville."
+    },
+    {
+      "id": "straddle_mur", "nom": "Écart allongé au mur", "zone": "adducteurs", "cotes": false,
+      "description": "Allongé sur le dos, fesses contre le mur, jambes tendues contre le mur : laisse-les s'écarter, puis resserre-les lentement de quelques centimètres et rouvre.",
+      "consigne": "Laisse la gravité ouvrir, puis contrôle la fermeture.",
+      "erreur": "Laisser le bas du dos décoller du sol.",
+      "cheville": "aucune"
+    },
+
+    {
+      "id": "hanches_90_90", "nom": "90/90 tenu", "zone": "hanches", "cotes": true,
+      "description": "Assis, jambe avant pliée à 90° devant toi, jambe arrière pliée à 90° sur le côté. Grandis-toi puis penche le buste au-dessus du tibia avant.",
+      "consigne": "Les deux fesses restent au sol, dos long.",
+      "erreur": "S'arrondir au lieu de basculer le bassin.",
+      "cheville": "faible", "noteCheville": "Si la cheville arrière tire, glisse un coussin dessous ou ouvre un peu l'angle."
+    },
+    {
+      "id": "switches_90_90", "nom": "90/90 switches sans les mains", "zone": "hanches", "cotes": false,
+      "description": "En 90/90, bascule les deux genoux de l'autre côté sans t'aider des mains, puis reviens.",
+      "consigne": "Buste droit, bras devant toi, mouvement lent.",
+      "erreur": "Se pencher en arrière et s'aider des mains.",
+      "cheville": "faible", "noteCheville": "Pieds posés, sans poids dessus : arrête si la cheville tourne mal."
+    },
+    {
+      "id": "pigeon", "nom": "Pigeon au sol", "zone": "hanches", "cotes": true, "pnf": "Appuie le genou et le tibia avant contre le sol.",
+      "description": "Jambe avant pliée devant toi au sol, jambe arrière tendue derrière. Descends le buste au-dessus de la jambe avant.",
+      "consigne": "Bassin de face, pied avant actif.",
+      "erreur": "Laisser le bassin s'affaisser du côté de la jambe pliée.",
+      "cheville": "forte", "remplacement": "pigeon_allonge",
+      "noteCheville": "La cheville avant porte le poids en torsion : remplacé par la version allongée en mode cheville."
+    },
+    {
+      "id": "pigeon_allonge", "nom": "Pigeon allongé (figure 4)", "zone": "hanches", "cotes": true, "pnf": "Pousse le genou croisé vers l'extérieur contre ta main.",
+      "description": "Sur le dos, cheville posée sur le genou opposé, attire la cuisse de dessous vers toi.",
+      "consigne": "Tête et épaules relâchées au sol.",
+      "erreur": "Tirer en soulevant le bassin.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "shin_box", "nom": "Shin box get-ups", "zone": "dos", "cotes": true,
+      "description": "Depuis la position 90/90, monte à genoux en poussant le bassin vers l'avant, puis redescends en contrôle.",
+      "consigne": "Fessiers serrés en haut, descente lente.",
+      "erreur": "Se jeter vers l'avant avec élan.",
+      "cheville": "forte", "remplacement": "switches_90_90",
+      "noteCheville": "Le passage à genoux tord la cheville arrière sous le poids : remplacé par les 90/90 switches."
+    },
+
+    {
+      "id": "fente_basse", "nom": "Fente basse genou au sol", "zone": "kicks", "cotes": true, "pnf": "Tire le genou arrière vers l'avant contre le sol, sans bouger.",
+      "description": "Un genou au sol, l'autre pied devant. Rentre le bassin et avance-le doucement.",
+      "consigne": "Serre la fesse de la jambe arrière, buste droit.",
+      "erreur": "Creuser le bas du dos au lieu de rentrer le bassin.",
+      "cheville": "faible", "noteCheville": "Jambe blessée derrière, coussin sous le genou et le cou-de-pied. Ne la mets pas devant : la cheville avant se plie."
+    },
+    {
+      "id": "elevations_laterales", "nom": "Élévations latérales en appui", "zone": "kicks", "cotes": true,
+      "description": "Debout de profil, une main sur un support. Monte la jambe sur le côté, genou plié comme la chambre du roundhouse, tiens 3 s en haut, redescends lentement.",
+      "consigne": "Tiens 3 s en haut en serrant la fesse, sans pencher le buste.",
+      "erreur": "Monter avec élan, ou basculer le buste pour gagner de la hauteur.",
+      "cheville": "faible", "noteCheville": "Avec appui, mais la jambe d'appui porte tout ton poids : mets la jambe blessée en mouvement et arrête si ça fait mal."
+    },
+    {
+      "id": "elevations_frontales", "nom": "Élévations frontales actives (teep)", "zone": "kicks", "cotes": true,
+      "description": "Debout, une main sur un support. Monte le genou puis tends la jambe devant toi comme un teep, tiens 2 s, redescends lentement.",
+      "consigne": "Buste droit, la hauteur vient de la hanche.",
+      "erreur": "S'enrouler en arrière pour monter le pied.",
+      "cheville": "faible", "noteCheville": "Avec appui, mais la jambe d'appui porte tout ton poids : arrête si ça fait mal."
+    },
+    {
+      "id": "kicks_ralenti", "nom": "Kicks au ralenti", "zone": "kicks", "cotes": true,
+      "description": "Main sur un support, déroule un roundhouse au ralenti : chambre, extension, maintien 2 à 3 s, retour en chambre.",
+      "consigne": "Contrôle total : tu dois pouvoir t'arrêter à tout moment.",
+      "erreur": "Prendre de l'élan ou laisser tomber la jambe au retour.",
+      "cheville": "faible", "noteCheville": "Le pivot sur la jambe d'appui sollicite la cheville : pivote peu et arrête si ça fait mal."
+    },
+    {
+      "id": "releve_adducteur", "nom": "Relevés d'adducteur allongé", "zone": "adducteurs", "cotes": true,
+      "description": "Allongé sur le côté, jambe du dessus pliée devant toi, monte la jambe du dessous tendue, tiens 2 s, redescends.",
+      "consigne": "Jambe bien tendue, pointe du pied vers l'avant.",
+      "erreur": "Rouler le bassin vers l'arrière.",
+      "cheville": "aucune"
+    },
+
+    {
+      "id": "rotations_thoraciques", "nom": "Rotations thoraciques à quatre pattes", "zone": "dos", "cotes": true,
+      "description": "À quatre pattes, une main derrière la tête : ouvre le coude vers le plafond en suivant du regard, puis referme vers le coude opposé.",
+      "consigne": "Bassin immobile, la rotation vient du haut du dos.",
+      "erreur": "Tourner le bassin avec le buste.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "scorpions", "nom": "Scorpions au sol", "zone": "dos", "cotes": true,
+      "description": "Sur le ventre, bras en croix : monte un pied et emmène-le vers la main opposée en tournant le bassin, puis reviens.",
+      "consigne": "Poitrine et bras au sol le plus possible, mouvement lent.",
+      "erreur": "Lancer la jambe d'un coup.",
+      "cheville": "aucune"
+    },
+    {
+      "id": "jefferson_curl", "nom": "Jefferson curl", "zone": "dos", "cotes": false, "charge": true, "chargesKg": [4, 4, 4, 6], "alerte": "progression lente",
+      "description": "Debout jambes tendues, haltère léger dans les mains : enroule le dos vertèbre par vertèbre vers le bas, puis déroule pour remonter.",
+      "consigne": "Très lent, charge légère : c'est la colonne qu'on assouplit, pas un exercice de force.",
+      "erreur": "Monter la charge trop vite ou descendre d'un bloc.",
+      "cheville": "faible", "noteCheville": "Debout sur les deux pieds, au sol (pas sur une marche) : arrête si la cheville tire."
+    },
+    {
+      "id": "cobra_actif", "nom": "Cobra actif", "zone": "dos", "cotes": false,
+      "description": "Sur le ventre, mains sous les épaules : monte la poitrine en t'aidant le moins possible des mains, tiens 3 s, redescends.",
+      "consigne": "Allonge la nuque, ce sont les muscles du dos qui montent.",
+      "erreur": "Pousser fort sur les bras et écraser le bas du dos.",
+      "cheville": "aucune"
+    }
+  ],
+
+  "seances": [
+    {
+      "id": "hanches_adducteurs", "nom": "Hanches & adducteurs", "duree": 20,
+      "elements": [
+        { "bloc": "preparation", "exercice": "chat_vache", "mode": "temps", "secondes": 45 },
+        { "bloc": "preparation", "exercice": "essuie_glaces", "mode": "temps", "secondes": 45 },
+        { "bloc": "preparation", "exercice": "hip_cars", "mode": "reps", "reps": 4, "tempo": 8 },
+        { "bloc": "developpement", "exercice": "grenouille", "mode": "pnf" },
+        { "bloc": "developpement", "exercice": "frog_rocks", "mode": "reps", "reps": 8, "tempo": 4 },
+        { "bloc": "developpement", "exercice": "pancake", "mode": "pnf" },
+        { "bloc": "developpement", "exercice": "papillon", "mode": "pnf" },
+        { "bloc": "developpement", "exercice": "hanches_90_90", "mode": "temps", "secondes": 45, "progressif": true },
+        { "bloc": "developpement", "exercice": "pigeon", "mode": "pnf" },
+        { "bloc": "renforcement", "exercice": "switches_90_90", "mode": "reps", "reps": 8, "tempo": 4 },
+        { "bloc": "renforcement", "exercice": "hip_cars", "mode": "reps", "reps": 4, "tempo": 8 },
+        { "bloc": "renforcement", "exercice": "cossack", "mode": "reps", "reps": 5, "tempo": 6 }
+      ]
+    },
+    {
+      "id": "kicks_teeps", "nom": "Kicks & teeps", "duree": 20,
+      "elements": [
+        { "bloc": "preparation", "exercice": "essuie_glaces", "mode": "temps", "secondes": 45 },
+        { "bloc": "preparation", "exercice": "hip_cars", "mode": "reps", "reps": 4, "tempo": 8 },
+        { "bloc": "developpement", "exercice": "fente_basse", "mode": "pnf" },
+        { "bloc": "developpement", "exercice": "pigeon", "mode": "temps", "secondes": 45, "progressif": true },
+        { "bloc": "developpement", "exercice": "pancake", "mode": "temps", "secondes": 45, "progressif": true },
+        { "bloc": "developpement", "exercice": "papillon", "mode": "pnf" },
+        { "bloc": "developpement", "exercice": "hanches_90_90", "mode": "temps", "secondes": 45, "progressif": true },
+        { "bloc": "renforcement", "exercice": "elevations_laterales", "mode": "reps", "reps": 5, "tempo": 6, "passages": 2 },
+        { "bloc": "renforcement", "exercice": "elevations_frontales", "mode": "reps", "reps": 5, "tempo": 5, "passages": 2 },
+        { "bloc": "renforcement", "exercice": "kicks_ralenti", "mode": "reps", "reps": 4, "tempo": 7, "passages": 2 },
+        { "bloc": "renforcement", "exercice": "releve_adducteur", "mode": "reps", "reps": 8, "tempo": 4 }
+      ]
+    },
+    {
+      "id": "dos_grappling", "nom": "Dos & grappling", "duree": 15,
+      "elements": [
+        { "bloc": "preparation", "exercice": "chat_vache", "mode": "temps", "secondes": 60 },
+        { "bloc": "preparation", "exercice": "essuie_glaces", "mode": "temps", "secondes": 45 },
+        { "bloc": "developpement", "exercice": "rotations_thoraciques", "mode": "reps", "reps": 6, "tempo": 5, "passages": 2 },
+        { "bloc": "developpement", "exercice": "scorpions", "mode": "reps", "reps": 5, "tempo": 6, "passages": 2 },
+        { "bloc": "developpement", "exercice": "jefferson_curl", "mode": "reps", "reps": 6, "tempo": 8, "passages": 2 },
+        { "bloc": "developpement", "exercice": "pancake", "mode": "temps", "secondes": 45, "progressif": true },
+        { "bloc": "developpement", "exercice": "hanches_90_90", "mode": "temps", "secondes": 45, "progressif": true },
+        { "bloc": "renforcement", "exercice": "shin_box", "mode": "reps", "reps": 5, "tempo": 6, "passages": 2 },
+        { "bloc": "renforcement", "exercice": "cobra_actif", "mode": "reps", "reps": 6, "tempo": 6, "passages": 2 },
+        { "bloc": "renforcement", "exercice": "rotations_thoraciques", "mode": "reps", "reps": 5, "tempo": 5 }
+      ]
+    },
+    {
+      "id": "complete", "nom": "Complète", "duree": 25,
+      "elements": [
+        { "bloc": "preparation", "exercice": "chat_vache", "mode": "temps", "secondes": 45 },
+        { "bloc": "preparation", "exercice": "hip_cars", "mode": "reps", "reps": 4, "tempo": 8 },
+        { "bloc": "developpement", "exercice": "grenouille", "mode": "pnf" },
+        { "bloc": "developpement", "exercice": "pancake", "mode": "pnf" },
+        { "bloc": "developpement", "exercice": "pancake_charge", "mode": "reps", "reps": 6, "tempo": 6 },
+        { "bloc": "developpement", "exercice": "papillon", "mode": "pnf" },
+        { "bloc": "developpement", "exercice": "pigeon", "mode": "pnf" },
+        { "bloc": "developpement", "exercice": "hanches_90_90", "mode": "temps", "secondes": 45, "progressif": true },
+        { "bloc": "developpement", "exercice": "fente_basse", "mode": "pnf" },
+        { "bloc": "developpement", "exercice": "rotations_thoraciques", "mode": "reps", "reps": 6, "tempo": 5 },
+        { "bloc": "developpement", "exercice": "jefferson_curl", "mode": "reps", "reps": 5, "tempo": 8 },
+        { "bloc": "renforcement", "exercice": "switches_90_90", "mode": "reps", "reps": 8, "tempo": 4 },
+        { "bloc": "renforcement", "exercice": "elevations_laterales", "mode": "reps", "reps": 5, "tempo": 6 },
+        { "bloc": "renforcement", "exercice": "elevations_frontales", "mode": "reps", "reps": 5, "tempo": 5 },
+        { "bloc": "renforcement", "exercice": "kicks_ralenti", "mode": "reps", "reps": 4, "tempo": 7 },
+        { "bloc": "renforcement", "exercice": "scorpions", "mode": "reps", "reps": 4, "tempo": 6 },
+        { "bloc": "renforcement", "exercice": "cobra_actif", "mode": "reps", "reps": 5, "tempo": 6 }
+      ]
+    }
+  ],
+
+  "anciennesRoutines": {
+    "express": "Mobilité express",
+    "hanches": "Souplesse hanches MMA",
+    "recup_haut": "Récupération haut du corps"
+  },
+
+  "tests": [
+    { "id": "straddle_cm", "nom": "Écart en pancake / straddle", "unite": "cm", "plusEstMieux": true,
+      "protocole": "Assis dos au mur, jambes tendues écartées au maximum sans douleur. Mesure la distance entre les deux talons." },
+    { "id": "jambe_laterale_cm", "nom": "Hauteur de jambe latérale", "unite": "cm", "plusEstMieux": true,
+      "protocole": "De profil contre un mur, main en appui : monte la jambe sur le côté et tiens 3 s. Note la hauteur du pied sur le mur (repère au crayon ou ruban), en cm depuis le sol." },
+    { "id": "rotation_g_cm", "nom": "Rotation thoracique, côté gauche", "unite": "cm", "plusEstMieux": false,
+      "protocole": "Allongé sur le côté droit, genoux pliés à 90° devant toi : ouvre le bras gauche vers le sol derrière toi, genoux immobiles. Mesure la distance épaule gauche – sol (0 = épaule au sol)." },
+    { "id": "rotation_d_cm", "nom": "Rotation thoracique, côté droit", "unite": "cm", "plusEstMieux": false,
+      "protocole": "Allongé sur le côté gauche, genoux pliés à 90° devant toi : ouvre le bras droit vers le sol derrière toi, genoux immobiles. Mesure la distance épaule droite – sol (0 = épaule au sol)." },
+    { "id": "doigts_orteils_cm", "nom": "Doigts-orteils assis", "unite": "cm", "plusEstMieux": true, "archive": true,
+      "protocole": "Ancien test (module mobilité) : n'est plus proposé, l'historique reste visible." }
+  ]
+}

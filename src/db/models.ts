@@ -142,9 +142,9 @@ export interface WaterEntry {
 // ---------------------------------------------------------------------------
 
 export interface MobilitySettings {
-  /** Méthode contracter-relâcher sur les exercices qui le permettent. */
+  /** Ancien réglage (module mobilité) : le PNF est désormais défini séance par séance dans souplesse.json. */
   pnf: boolean;
-  /** Niveau de maintien : chaque niveau ajoute du temps aux positions statiques. */
+  /** Niveau de souplesse (0 à 3) : maintiens +15 s, +1 répétition et charge ajustée par niveau. */
   holdLevel: number;
   /** Ressentis « facile » consécutifs, pour monter de niveau. */
   easyStreak: number;

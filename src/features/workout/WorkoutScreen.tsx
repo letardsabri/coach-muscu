@@ -10,7 +10,6 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useRef, useState } from 'react';
 import { programme } from '../../data/programme';
 import { db } from '../../db/db';
-import { useMobility } from '../mobility/MobilityContext';
 import type { PlannedExercise, Profile, Session, SetLog } from '../../db/models';
 import { buildSequence, nextStep, stepAfter, stepKey, type Step } from '../../engine/sequence';
 import { formatClock } from '../../lib/dates';
@@ -546,7 +545,6 @@ function FeelingCard({ session, index }: { session: Session; index: number }) {
 // ---------------------------------------------------------------------------
 
 function FinishView(props: { session: Session; sets: SetLog[]; elapsed: number; onUndo: () => void }) {
-  const { open } = useMobility();
   const { session, sets } = props;
   const [busy, setBusy] = useState(false);
   const totalReps = sets.reduce((n, s) => n + s.reps, 0);
@@ -624,19 +622,6 @@ function FinishView(props: { session: Session; sets: SetLog[]; elapsed: number; 
         >
           Enregistrer la séance
         </button>
-        {(session.type === 'A' || session.type === 'B' || session.type === 'F') && (
-          <button
-            className="btn-secondary"
-            disabled={busy}
-            onClick={async () => {
-              setBusy(true);
-              open('recup_haut');
-              await finishSession(session.id);
-            }}
-          >
-            Enregistrer + récupération (10 min)
-          </button>
-        )}
         <div className="link-row">
           <button className="btn-ghost" disabled={sets.length === 0} onClick={props.onUndo}>
             Annuler la dernière série

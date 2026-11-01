@@ -12,8 +12,8 @@ import { uuid } from '../../lib/id';
 import { Segmented, Sheet, Stepper } from '../../ui/components';
 import { SESSION_LABELS } from '../../ui/format';
 import { useHistory, useProfile, useProgramState } from '../data';
-import { mobilite } from '../../data/mobiliteData';
-import { recommendedRoutines } from '../../engine/mobility';
+import { souplesse } from '../../data/souplesseData';
+import { recommendedRoutines, type StretchReco } from '../../engine/mobility';
 import { useMobility } from '../mobility/MobilityContext';
 import { routineName } from '../mobility/useMobility';
 import { shortDate } from '../progress/stats';
@@ -42,8 +42,8 @@ export function Calendar() {
     trackingSince: dayKey(new Date(profile.createdAt)),
   });
   const selected = days.find((d) => d.day === openDay);
-  // Étirements recommandés (jamais obligatoires, jamais « manqués »).
-  const stretchReco = recommendedRoutines(days, data.mma, mobilite);
+  // Souplesse recommandée (jamais obligatoire, jamais « manquée »).
+  const stretchReco = recommendedRoutines(days, data.mma, souplesse);
   const units = weeklyLoadUnits(
     programme,
     days.flatMap((d) => d.done),
@@ -94,7 +94,7 @@ export function Calendar() {
   );
 }
 
-function DayRow({ day, today, stretch, onOpen }: { day: CalendarDay; today: string; stretch?: string; onOpen: () => void }) {
+function DayRow({ day, today, stretch, onOpen }: { day: CalendarDay; today: string; stretch?: StretchReco; onOpen: () => void }) {
   const date = parseDay(day.day);
   const isToday = day.day === today;
   return (
@@ -124,7 +124,12 @@ function DayRow({ day, today, stretch, onOpen }: { day: CalendarDay; today: stri
             </span>
           ))}
           {!day.planned && day.done.length === 0 && !day.missed && day.mma.length === 0 && <span className="faint">Repos</span>}
-          {stretch && <span className="chip chip-reco">Étirements · {routineName(stretch)}</span>}
+          {stretch && (
+            <span className="chip chip-reco">
+              Souplesse · {routineName(stretch.seance)}
+              {stretch.evening ? ' (soir)' : ''}
+            </span>
+          )}
         </span>
         {day.warnings.map((w) => (
           <small key={w} className="cal-warning">
@@ -139,7 +144,7 @@ function DayRow({ day, today, stretch, onOpen }: { day: CalendarDay; today: stri
   );
 }
 
-function DaySheet(props: { day: CalendarDay; today: string; profile: Profile; overrides: ScheduleOverride[]; stretch?: string; onClose: () => void }) {
+function DaySheet(props: { day: CalendarDay; today: string; profile: Profile; overrides: ScheduleOverride[]; stretch?: StretchReco; onClose: () => void }) {
   const { open } = useMobility();
   const { day, today } = props;
   const [moving, setMoving] = useState(false);
@@ -221,11 +226,12 @@ function DaySheet(props: { day: CalendarDay; today: string; profile: Profile; ov
 
       {props.stretch && (
         <div className="card" style={{ gap: 8 }}>
-          <h3 className="card-h">Étirements recommandés</h3>
+          <h3 className="card-h">Souplesse recommandée</h3>
           <p className="muted" style={{ fontSize: 14 }}>
-            {routineName(props.stretch)} — recommandé, pas obligatoire.
+            {routineName(props.stretch.seance)} — recommandée, pas obligatoire.
+            {props.stretch.evening ? ' Jour de muscu : le soir, à distance de la séance.' : ''}
           </p>
-          <button className="btn-secondary" onClick={() => open(props.stretch)}>
+          <button className="btn-secondary" onClick={() => open(props.stretch?.seance)}>
             Lancer maintenant
           </button>
         </div>

@@ -1726,12 +1726,6 @@ p {
   color: var(--text-2);
 }
 
-.warmup-link {
-  align-self: flex-start;
-  padding: 0;
-  font-size: 15px;
-}
-
 .guided-body {
   align-items: stretch;
   gap: 12px;
@@ -1774,6 +1768,28 @@ p {
 
 .guided-actions .btn-primary {
   flex: 1;
+}
+
+.guided-actions {
+  flex-wrap: wrap;
+}
+
+.guided-actions .guided-done {
+  flex-basis: 100%;
+  min-height: 64px;
+  font-size: 20px;
+}
+
+.guided-actions .guided-pause {
+  flex: 1;
+  width: auto;
+  font-size: 17px;
+}
+
+.guided-of {
+  font-size: 44px;
+  color: var(--text-3);
+  letter-spacing: 0;
 }
 
 .zone {

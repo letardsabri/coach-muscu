@@ -1,6 +1,6 @@
 /**
- * Ouverture de l'espace Mobilité depuis n'importe quel écran (accueil, calendrier, séance).
- * `routineId` lance directement la routine guidée ; sans argument, ouvre l'écran Mobilité.
+ * Ouverture de l'espace Souplesse depuis n'importe quel écran (accueil, calendrier).
+ * `routineId` lance directement la séance guidée ; sans argument, ouvre l'écran Souplesse.
  */
 import { createContext, useContext } from 'react';
 
